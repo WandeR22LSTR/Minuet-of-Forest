@@ -102,3 +102,49 @@ export async function writeIco(path, images) {
   });
   await writeFile(path, Buffer.concat([head, ...images.map((i) => i.png)]));
 }
+
+// --- Emblems of faceted pyramids and orbs (Light, Shadow) ---------------------
+/**
+ * Pyramids are tetrahedra: an outline triangle on the ground and a peak raised `peakHeight`
+ * above a point inside it, so each of the three facets is shaded by its own normal.
+ * Orbs are spheres: a radial gradient with its highlight towards the light.
+ * Returns the shapes' silhouettes (for shadows, unfilled), the shaded body and the orb gradient.
+ */
+export function emblem(place, { pyramids = [], peakHeight, orbs = [], orbR, ramp: r, model, id }) {
+  const pts = (a) => a.map((p) => place(p).map(f1).join(",")).join(" ");
+  let silhouettes = "", body = "";
+  for (const [a0, a1, a2, peak] of pyramids) {
+    const top = [...peak, peakHeight];
+    for (const [a, c] of [[a0, a1], [a0, a2], [a1, a2]]) {
+      let n = cross(sub([...c, 0], [...a, 0]), sub(top, [...a, 0]));
+      if (n[2] < 0) n = n.map((v) => -v);
+      body += `<polygon points="${pts([a, c, peak])}" fill="${r.shade(norm(n), model)}"/>`;
+    }
+    silhouettes += `<polygon points="${pts([a0, a1, a2])}"/>`;
+  }
+  for (const o of orbs) {
+    const [x, y] = place(o).map(f1), rr = f1(orbR * place.scale);
+    silhouettes += `<circle cx="${x}" cy="${y}" r="${rr}"/>`;
+    body += `<circle cx="${x}" cy="${y}" r="${rr}" fill="url(#${id}-orb)"/>`;
+  }
+  const stops = [[0, 1], [0.35, 0.82], [0.7, 0.55], [1, 0.3]].map(([o, v]) => `<stop offset="${o}" stop-color="${r.tone(v)}"/>`).join("");
+  const defs = orbs.length ? `<radialGradient id="${id}-orb" cx="0.36" cy="0.3" r="0.78">${stops}</radialGradient>` : "";
+  return { silhouettes, body, defs };
+}
+
+/** Bounding box of pyramids' outlines and orbs. */
+export function emblemBox({ pyramids = [], orbs = [], orbR = 0 }) {
+  const pts = [...pyramids.flatMap((p) => p.slice(0, 3)), ...orbs.flatMap(([x, y]) => [[x - orbR, y - orbR], [x + orbR, y + orbR]])];
+  const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+  return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+}
+
+/** A tile mark for a pyramids-and-orbs emblem, with the shared soft shadow. */
+export function emblemMark(shape, { size = 512, fill = 0.4, square = false, id, theme, title }) {
+  const b = emblemBox(shape);
+  const extent = Math.max(b.x1 - b.x0, b.y1 - b.y0) / 2;
+  const place = placement(size, { extent, box: b, origin: [(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2], fill });
+  const e = emblem(place, { ...shape, ramp: theme.ramp, model: theme.model, id });
+  const shadow = `<g transform="translate(${f1(size * SHADOW_OFFSET.dx)} ${f1(size * SHADOW_OFFSET.dy)})" fill="${theme.shadow[0]}" fill-opacity="${theme.shadow[1]}" filter="url(#${id}-soft)">${e.silhouettes}</g>`;
+  return svgDoc({ size, defs: tileDefs(id, theme.tile) + e.defs + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title });
+}

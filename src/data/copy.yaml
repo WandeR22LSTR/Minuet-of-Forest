@@ -1,0 +1,26 @@
+# All site copy in one place. Every value in square brackets is a placeholder that is
+# shown on the live site as-is until Luca writes the real text. `npm run todos` lists them.
+site:
+  description: "[site description]"
+home:
+  title: "[title]"
+  intro: "[introduction]"
+  research: "[one line about research]"
+  research_pending: "[note shown until the research page is published]"
+  projects: "[one line about projects]"
+  resume: "[one line about the resume]"
+  now_more: "[link to the now page]"
+projects:
+  description: "[description of the projects page]"
+contact:
+  description: "[description of the contact page]"
+resume:
+  description: "[description of the resume page]"
+  empty: "[note shown while the resume is being written]"
+cv:
+  description: "[description of the CV page]"
+  empty: "[note shown while the CV is being written]"
+not_found:
+  title: "[404 title]"
+  text: "[404 message]"
+  home: "[link back home]"

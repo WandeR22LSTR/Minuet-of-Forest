@@ -1,4 +1,5 @@
-// Lists every remaining TODO(Luca) and every draft page. Finish or keep drafted before going live.
+// Lists every remaining TODO(Luca), every [placeholder] shown on the site, and every draft page.
+// Finish or keep drafted before going live.
 import { readFile } from "node:fs/promises";
 import { walk, draftFiles, routeOf } from "./lib.mjs";
 
@@ -12,6 +13,17 @@ for (const f of files) {
     }
   });
 }
+// Placeholders: "[lowercase words]" in site copy and content (Markdown links excluded).
+let placeholders = 0;
+for (const f of files.filter((f) => /\.(ya?ml|md|mdx)$/.test(f))) {
+  (await readFile(f, "utf8")).split("\n").forEach((line, i) => {
+    for (const m of line.matchAll(/\[[a-z0-9][^\]\n]*\](?!\()/g)) {
+      console.log(`${f}:${i + 1}: ${m[0]}`);
+      placeholders++;
+    }
+  });
+}
+console.log(`\n${placeholders} placeholder(s) shown on the site.`);
 const drafts = await draftFiles();
 console.log(`\n${count} TODO(Luca) item(s).\n\nDraft pages (excluded from the build):`);
 for (const d of drafts) console.log(`  ${routeOf(d)}  (${d})`);

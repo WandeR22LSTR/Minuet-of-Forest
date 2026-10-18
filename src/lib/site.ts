@@ -1,4 +1,9 @@
 import { getCollection } from "astro:content";
+import { parse } from "yaml";
+import copyRaw from "../data/copy.yaml?raw";
+
+/** Site copy (src/data/copy.yaml). Placeholders in [brackets] until Luca writes them. */
+export const copy = parse(copyRaw);
 
 /** Prefix an internal path with the configured base. Always use this for internal links. */
 export function url(path = "/"): string {

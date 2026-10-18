@@ -2,7 +2,7 @@
 import { parse } from "yaml";
 import raw from "../data/projects.yaml?raw";
 import Base from "../layouts/Base.astro";
-import { clean, url } from "../lib/site";
+import { clean, url, copy } from "../lib/site";
 import { getCollection } from "astro:content";
 
 type Project = { name: string; status: "live" | "building"; summary?: string; link?: string; link_label?: string };
@@ -11,7 +11,7 @@ const projects = (clean(parse(raw)) ?? []) as Project[];
 const docs = new Set((await getCollection("docs", ({ data }) => import.meta.env.DEV || !data.draft)).map((d) => `/${d.id}/`));
 const linkOk = (l?: string) => l && (!l.startsWith("/docs/") || docs.has(l) || l === "/docs/");
 ---
-<Base title="Projects" description="Projects Luca is running or building.">
+<Base title="Projects" description={copy.projects.description}>
   <h1>Projects</h1>
   <ul class="cards">
     {projects.map((p) => (
@@ -19,7 +19,7 @@ const linkOk = (l?: string) => l && (!l.startsWith("/docs/") || docs.has(l) || l
         <h2>{p.name}</h2>
         <p><span class="tag">{p.status}</span></p>
         {p.summary && <p>{p.summary}</p>}
-        {linkOk(p.link) ? <p><a href={url(p.link!)}>{p.link_label ?? "More"}</a></p> : <p><a href={url("/docs/")}>Docs</a></p>}
+        {linkOk(p.link) ? <p><a href={url(p.link!)}>{p.link_label ?? "[link label]"}</a></p> : <p><a href={url("/docs/")}>Docs</a></p>}
       </li>
     ))}
   </ul>

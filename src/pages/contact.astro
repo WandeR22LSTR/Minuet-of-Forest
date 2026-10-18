@@ -2,11 +2,11 @@
 import { parse } from "yaml";
 import raw from "../data/contact.yaml?raw";
 import Base from "../layouts/Base.astro";
-import { clean } from "../lib/site";
+import { clean, copy } from "../lib/site";
 import { GITHUB_URL } from "../../site.config.mjs";
 const c = (clean(parse(raw)) ?? {}) as { email?: string };
 ---
-<Base title="Contact" description="How to reach Luca.">
+<Base title="Contact" description={copy.contact.description}>
   <h1>Contact</h1>
   <ul>
     {c.email && <li>Email: <a href={`mailto:${c.email}`}>{c.email}</a></li>}

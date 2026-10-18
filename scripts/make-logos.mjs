@@ -3,12 +3,14 @@
 //   node scripts/make-logos.mjs forest     Minuet of Forest only (this site)
 //   node scripts/make-logos.mjs light      Prelude of Light only
 //   node scripts/make-logos.mjs shadow     Nocturne of Shadow only
+//   node scripts/make-logos.mjs ice        Ice Cavern only
 // Forest goes into the site (src/assets/logo, public/). Other projects go into logos/<project>/,
 // for copying into their own repos.
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as forest from "./logos/forest.mjs";
 import * as light from "./logos/light.mjs";
 import * as shadow from "./logos/shadow.mjs";
+import * as ice from "./logos/ice.mjs";
 import { renderPngs, writeIco } from "./logos/engine.mjs";
 import { SITE_TITLE } from "../site.config.mjs";
 
@@ -94,6 +96,21 @@ if (want("shadow")) {
   // This site's hidden footer link to Nocturne uses the mark.
   await writeFile("src/assets/logo/nocturne-mark.svg", files["logo.svg"]);
   console.log(`shadow: ${out}/`);
+}
+
+if (want("ice")) {
+  const out = "logos/ice-cavern";
+  await mkdir(out, { recursive: true });
+  const files = {
+    "logo.svg": ice.mark(),
+    "medallion.svg": ice.medallion(),
+    "medallion-compact.svg": ice.medallion({ compact: true }),
+  };
+  for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
+  await rasters(out, { square: ice.mark({ square: true }), tile: files["logo.svg"] });
+  await writeFile(`${out}/site.webmanifest`, manifest("Ice Cavern", "Ice Cavern", ice.TILE[0]));
+  await renderPngs([{ svg: files["medallion.svg"], size: 1024, path: `${out}/medallion-1024.png` }]);
+  console.log(`ice: ${out}/`);
 }
 
 async function renderOg(html) {

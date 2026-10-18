@@ -18,3 +18,6 @@
   --sl-color-bg-nav: var(--sage);
   --sl-color-bg-sidebar: var(--bg);
 }
+
+/* Display font for page titles and section headings in the docs. */
+.content-panel h1, .sl-markdown-content :is(h1, h2) { font-family: var(--font-display); font-weight: 400; color: var(--forest); }

@@ -10,6 +10,8 @@ Bump it with every release and add an entry here.
 - Site adds favicon.ico, 192/512 icons and a web manifest.
 - Nocturne of Shadow logo: shadow medallion mark and full medallion (`logos/nocturne-of-shadow/`).
   The hidden footer link to Nocturne now uses the mark instead of a placeholder circle.
+- Prelude of Light full medallion (light and dark), plus large renders.
+- Handoff zips for the Prelude and Nocturne sessions in `logos/handoffs/`.
 - Fix: with `NOCTURNE_URL` set, the footer no longer overflows at 360px.
 
 ## 0.6.1 (2026-10-18)

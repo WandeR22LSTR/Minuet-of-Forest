@@ -1,0 +1,65 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+h1, h2, h3 { color: var(--forest); line-height: 1.25; }
+a { color: var(--link); text-underline-offset: 0.15em; }
+a:hover { color: var(--forest); }
+:focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; border-radius: 2px; }
+img, svg { max-width: 100%; height: auto; }
+
+.skip-link {
+  position: absolute; left: 0.5rem; top: -3rem; z-index: 10;
+  background: var(--forest); color: var(--white); padding: 0.5rem 1rem; border-radius: 4px;
+}
+.skip-link:focus { top: 0.5rem; color: var(--white); }
+
+.wrap { max-width: 46rem; margin: 0 auto; padding: 0 1rem; }
+
+.site-header { background: var(--sage); }
+.site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; padding-block: 0.75rem; }
+.brand { font-weight: 700; color: var(--forest); text-decoration: none; font-size: 1.1rem; }
+.site-nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; }
+.site-nav a { color: var(--forest); text-decoration: none; padding: 0.25rem 0; }
+.site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; }
+
+main { padding-block: 1.5rem 3rem; }
+
+.site-footer { border-top: 1px solid var(--sage); color: var(--muted); font-size: 0.9rem; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; padding-block: 1rem; }
+
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); padding: 0; list-style: none; }
+.card { background: var(--white); border: 1px solid var(--sage); border-radius: 8px; padding: 1rem; }
+.card h2, .card h3 { margin-top: 0; font-size: 1.15rem; }
+
+.tag { display: inline-block; background: var(--sage); color: var(--forest); font-size: 0.8rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 999px; }
+.muted { color: var(--muted); }
+
+.button {
+  display: inline-block; background: var(--forest); color: var(--white); text-decoration: none;
+  padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;
+}
+.button:hover { color: var(--white); background: var(--text); }
+
+.draft-banner { background: #fff3cd; color: #5c4400; padding: 0.5rem 1rem; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Print: resume/CV and Ctrl+P on any page. White paper, forest accents, single column. */
+@media print {
+  @page { margin: 14mm 16mm; }
+  body { background: #fff; color: #000; font-size: 10.5pt; line-height: 1.4; }
+  .skip-link, .site-header, .site-footer, .draft-banner { display: none !important; }
+  main { padding: 0; }
+  .wrap { max-width: none; padding: 0; }
+  h1, h2 { color: var(--forest); }
+  a { color: var(--forest); text-decoration: none; }
+}

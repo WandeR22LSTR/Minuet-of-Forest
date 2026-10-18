@@ -1,0 +1,71 @@
+---
+import "../styles/tokens.css";
+import "../styles/global.css";
+import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_URL } from "../../site.config.mjs";
+import { url, navItems } from "../lib/site";
+import Medallion from "../components/Medallion.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Resume/CV: minimal header, no footer medallion. */
+  minimal?: boolean;
+  draft?: boolean;
+}
+const { title, description = SITE_DESCRIPTION, minimal = false, draft = false } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const nav = minimal ? [] : await navItems();
+const here = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="sitemap" href={url("/sitemap-index.xml")} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_TITLE} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {draft && <meta name="robots" content="noindex" />}
+  </head>
+  <body class={minimal ? "minimal" : undefined}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={url("/")}>{SITE_TITLE}</a>
+        {nav.length > 0 && (
+          <nav class="site-nav" aria-label="Main">
+            <ul>
+              {nav.map((i) => (
+                <li><a href={url(i.href)} aria-current={here === url(i.href) ? "page" : undefined}>{i.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <slot name="header-extra" />
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="wrap">
+        {draft && <p class="draft-banner">Draft: visible in development only, excluded from the production build.</p>}
+        <slot />
+      </div>
+    </main>
+    {!minimal && (
+      <footer class="site-footer">
+        <div class="wrap">
+          <p>© {new Date().getFullYear()} Luca · <a href={GITHUB_URL}>GitHub</a></p>
+          <Medallion />
+        </div>
+      </footer>
+    )}
+  </body>
+</html>

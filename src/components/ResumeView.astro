@@ -1,0 +1,65 @@
+---
+// Renders resume.yaml / cv.yaml. Used for the web page and, via print media, the PDF.
+import { parse } from "yaml";
+import { clean, url } from "../lib/site";
+import { SITE } from "../../site.config.mjs";
+
+interface Item { title?: string; org?: string; location?: string; dates?: string; bullets?: string[] }
+interface Doc { name?: string; headline?: string; email?: string; github?: string; sections?: { title: string; items?: Item[] }[] }
+interface Props { raw: string; pdf: string; pageTitle: string }
+const { raw, pdf, pageTitle } = Astro.props;
+const d = (clean(parse(raw)) ?? {}) as Doc;
+const sections = (d.sections ?? []).filter((s) => s.items?.some((i) => i.title));
+const siteUrl = new URL(url("/"), SITE).href;
+const pageUrl = new URL(Astro.url.pathname, SITE).href;
+const host = (u: string) => u.replace(/^https?:\/\//, "").replace(/\/$/, "");
+---
+<article class="resume">
+  <header class="resume-head">
+    <h1>{d.name}</h1>
+    <p class="sr-only">{pageTitle}</p>
+    {d.headline && <p class="headline">{d.headline}</p>}
+    <ul class="contact">
+      {d.email && <li><a href={`mailto:${d.email}`}>{d.email}</a></li>}
+      <li><a href={pageUrl}>{host(siteUrl)}</a></li>
+      {d.github && <li><a href={d.github}>{host(d.github)}</a></li>}
+    </ul>
+    <p class="actions"><a class="button" href={url(pdf)} download>Download PDF</a></p>
+  </header>
+  {sections.length === 0 && <p class="muted">Being written. Check back soon.</p>}
+  {sections.map((s) => (
+    <section>
+      <h2>{s.title}</h2>
+      {s.items!.filter((i) => i.title).map((i) => (
+        <div class="item">
+          <div class="item-head">
+            <h3>{i.title}{i.org && <span class="org">, {i.org}</span>}</h3>
+            {i.dates && <p class="dates">{i.dates}</p>}
+          </div>
+          {i.location && <p class="muted loc">{i.location}</p>}
+          {i.bullets && <ul>{i.bullets.map((b) => <li>{b}</li>)}</ul>}
+        </div>
+      ))}
+    </section>
+  ))}
+</article>
+<style>
+  .resume { background: var(--white); border: 1px solid var(--sage); border-radius: 8px; padding: 1.5rem; }
+  .resume h1 { margin: 0; }
+  .headline { margin: 0.25rem 0; font-size: 1.1rem; }
+  .contact { list-style: none; padding: 0; margin: 0.5rem 0; display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+  .resume h2 { font-size: 1.15rem; border-bottom: 2px solid var(--sage); padding-bottom: 0.2rem; margin-top: 1.5rem; }
+  .item { margin-bottom: 0.9rem; }
+  .item-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 1rem; align-items: baseline; }
+  .item h3 { font-size: 1rem; margin: 0; color: var(--text); }
+  .org { font-weight: 400; }
+  .dates, .loc { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  .item ul { margin: 0.3rem 0 0; padding-left: 1.2rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media print {
+    .resume { border: 0; padding: 0; }
+    .actions { display: none; }
+    .item { break-inside: avoid; }
+    .contact a::after { content: none; }
+  }
+</style>

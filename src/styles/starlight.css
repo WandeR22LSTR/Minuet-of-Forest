@@ -1,0 +1,20 @@
+/* Map site tokens onto Starlight. Light only for now. */
+:root, :root[data-theme="light"], :root[data-theme="dark"] {
+  color-scheme: light;
+  --sl-font: var(--font-sans);
+  --sl-color-white: var(--text);
+  --sl-color-gray-1: var(--text);
+  --sl-color-gray-2: var(--text);
+  --sl-color-gray-3: var(--muted);
+  --sl-color-gray-4: #8a9a8f;
+  --sl-color-gray-5: var(--sage);
+  --sl-color-gray-6: #ebf0e6;
+  --sl-color-gray-7: var(--bg);
+  --sl-color-black: var(--bg);
+  --sl-color-accent-low: var(--sage);
+  --sl-color-accent: var(--link);
+  --sl-color-accent-high: var(--forest);
+  --sl-color-text-accent: var(--link);
+  --sl-color-bg-nav: var(--sage);
+  --sl-color-bg-sidebar: var(--bg);
+}

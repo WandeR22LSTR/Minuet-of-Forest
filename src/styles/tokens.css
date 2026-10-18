@@ -1,0 +1,12 @@
+/* Design tokens (docs/design-spec.md). Keep new pairings at 4.5:1 or better. */
+:root {
+  --bg: #f4f6f0;
+  --sage: #dfe9d6;
+  --forest: #1f4d34;
+  --link: #2d6a46;
+  --text: #1d2a21;
+  --muted: #4f6356;
+  --white: #ffffff;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}

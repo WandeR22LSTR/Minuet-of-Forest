@@ -1,10 +1,11 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
-import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_URL } from "../../site.config.mjs";
-import { url, navItems } from "../lib/site";
+import { SITE_TITLE, GITHUB_URL } from "../../site.config.mjs";
+import { url, navItems, copy } from "../lib/site";
 import Medallion from "../components/Medallion.astro";
 import Logo from "../components/Logo.astro";
+import SiteVersion from "../components/SiteVersion.astro";
 
 interface Props {
   title?: string;
@@ -13,7 +14,7 @@ interface Props {
   minimal?: boolean;
   draft?: boolean;
 }
-const { title, description = SITE_DESCRIPTION, minimal = false, draft = false } = Astro.props;
+const { title, description = copy.site.description, minimal = false, draft = false } = Astro.props;
 const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const nav = minimal ? [] : await navItems();
@@ -37,7 +38,7 @@ const here = Astro.url.pathname;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(url("/og-image.png"), Astro.site).href} />
-    <meta property="og:image:alt" content="Minuet of Forest: the forest medallion" />
+    <meta property="og:image:alt" content={`${SITE_TITLE} logo`} />
     <meta name="twitter:card" content="summary_large_image" />
     {draft && <meta name="robots" content="noindex" />}
   </head>
@@ -67,8 +68,8 @@ const here = Astro.url.pathname;
     {!minimal && (
       <footer class="site-footer">
         <div class="wrap">
-          <p>© {new Date().getFullYear()} Luca · <a href={GITHUB_URL}>GitHub</a></p>
-          <Medallion />
+          <p>© {new Date().getFullYear()} Luca · <a href={GITHUB_URL}>GitHub</a> <Medallion /></p>
+          <SiteVersion />
         </div>
       </footer>
     )}

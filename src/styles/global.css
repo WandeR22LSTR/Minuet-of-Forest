@@ -33,10 +33,13 @@ img, svg { max-width: 100%; height: auto; }
 .site-nav a { color: var(--forest); text-decoration: none; padding: 0.25rem 0; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; }
 
-main { padding-block: 1.5rem 3rem; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; padding-block: 1.5rem 3rem; }
 
-.site-footer { border-top: 1px solid var(--sage); color: var(--muted); font-size: 0.9rem; }
-.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; padding-block: 1rem; }
+/* Quiet footer at the end of the page: credits left, medallion and version bottom right. */
+.site-footer { border-top: 1px solid var(--sage); color: var(--muted); font-size: 0.85rem; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem 1rem; padding-block: 0.75rem; }
+.site-footer p { margin: 0; display: flex; align-items: center; gap: 0.35rem; }
 
 .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); padding: 0; list-style: none; }
 .card { background: var(--white); border: 1px solid var(--sage); border-radius: 8px; padding: 1rem; }

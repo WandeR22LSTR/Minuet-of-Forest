@@ -1,9 +1,13 @@
 ---
 import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
 import { url } from "../lib/site";
 ---
 <Base title="Lost in the woods" description="Page not found.">
-  <h1>Lost in the woods</h1>
+  <section class="hero">
+    <Logo size={80} tile={false} />
+    <h1>Lost in the woods</h1>
+  </section>
   <p>This path winds deeper into the forest than any page goes. It may have moved, or never existed.</p>
   <p><a href={url("/")}>Follow the song back home</a></p>
 </Base>

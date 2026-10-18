@@ -4,6 +4,7 @@ import "../styles/global.css";
 import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_URL } from "../../site.config.mjs";
 import { url, navItems } from "../lib/site";
 import Medallion from "../components/Medallion.astro";
+import Logo from "../components/Logo.astro";
 
 interface Props {
   title?: string;
@@ -28,19 +29,23 @@ const here = Astro.url.pathname;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url("/apple-touch-icon.png")} />
     <link rel="sitemap" href={url("/sitemap-index.xml")} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(url("/og-image.png"), Astro.site).href} />
+    <meta property="og:image:alt" content="Minuet of Forest: the forest medallion" />
+    <meta name="twitter:card" content="summary_large_image" />
     {draft && <meta name="robots" content="noindex" />}
   </head>
   <body class={minimal ? "minimal" : undefined}>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href={url("/")}>{SITE_TITLE}</a>
+        <a class="brand" href={url("/")}><Logo size={40} />{SITE_TITLE}</a>
         {nav.length > 0 && (
           <nav class="site-nav" aria-label="Main">
             <ul>

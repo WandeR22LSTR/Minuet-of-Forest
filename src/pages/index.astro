@@ -1,6 +1,7 @@
 ---
 import { render } from "astro:content";
 import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
 import { url, publishedPages } from "../lib/site";
 
 const pages = await publishedPages();
@@ -15,9 +16,12 @@ const cards = [
 ];
 ---
 <Base>
-  <section aria-labelledby="intro">
-    <h1 id="intro">Hi, I'm Luca</h1>
-    <p>Also known as WandeR. This site collects my research, projects and resume.</p>
+  <section class="hero" aria-labelledby="intro">
+    <Logo size={96} tile={false} />
+    <div>
+      <h1 id="intro">Hi, I'm Luca</h1>
+      <p>Also known as WandeR. This site collects my research, projects and resume.</p>
+    </div>
   </section>
   <ul class="cards">
     {cards.map((c) => (

@@ -9,6 +9,8 @@ body {
   overflow-wrap: break-word;
 }
 h1, h2, h3 { color: var(--forest); line-height: 1.25; }
+h1, h2, .display { font-family: var(--font-display); font-weight: 400; letter-spacing: 0.01em; }
+h1 { font-size: clamp(2rem, 6vw, 2.6rem); }
 a { color: var(--link); text-underline-offset: 0.15em; }
 a:hover { color: var(--forest); }
 :focus-visible { outline: 3px solid var(--forest); outline-offset: 2px; border-radius: 2px; }
@@ -24,7 +26,9 @@ img, svg { max-width: 100%; height: auto; }
 
 .site-header { background: var(--sage); }
 .site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; padding-block: 0.75rem; }
-.brand { font-weight: 700; color: var(--forest); text-decoration: none; font-size: 1.1rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--forest); text-decoration: none; font-family: var(--font-display); font-size: 1.45rem; line-height: 1; }
+.brand:hover { color: var(--forest); }
+.brand .logo { flex: none; }
 .site-nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; }
 .site-nav a { color: var(--forest); text-decoration: none; padding: 0.25rem 0; }
 .site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; }
@@ -36,7 +40,7 @@ main { padding-block: 1.5rem 3rem; }
 
 .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); padding: 0; list-style: none; }
 .card { background: var(--white); border: 1px solid var(--sage); border-radius: 8px; padding: 1rem; }
-.card h2, .card h3 { margin-top: 0; font-size: 1.15rem; }
+.card h2, .card h3 { margin-top: 0; font-size: 1.35rem; }
 
 .tag { display: inline-block; background: var(--sage); color: var(--forest); font-size: 0.8rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 999px; }
 .muted { color: var(--muted); }
@@ -61,5 +65,11 @@ main { padding-block: 1.5rem 3rem; }
   main { padding: 0; }
   .wrap { max-width: none; padding: 0; }
   h1, h2 { color: var(--forest); }
+  .logo { display: none; }
   a { color: var(--forest); text-decoration: none; }
 }
+
+.hero { display: flex; align-items: center; gap: clamp(0.75rem, 3vw, 1.25rem); }
+.hero .logo { flex: none; width: clamp(56px, 16vw, 96px); height: auto; }
+.hero h1 { margin: 0; }
+.hero p { margin: 0.25rem 0 0; }

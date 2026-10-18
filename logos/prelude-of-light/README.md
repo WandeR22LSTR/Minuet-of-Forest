@@ -9,6 +9,9 @@ The light medallion's emblem: three orbs and three faceted pyramids, no disc. So
 | `favicon.ico` | 32 + 48 px, light |
 | `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest` | Bookmarks and home screen, light (bookmarks can't switch themes) |
 | `discord-avatar-1024.png` | Bot avatar: dark, emblem small enough to clear Discord's circle crop |
+| `medallion-light.svg`, `medallion-dark.svg` | Full medallion (emblem on the shared plate with runes), 96px and up |
+| `medallion-light-compact.svg`, `medallion-dark-compact.svg` | Medallion without runes: the footer, next to the version |
+| `medallion-light-1024.png`, `medallion-dark-1024.png` | Large transparent renders, kept for a future project |
 
 ## Changes from the previous version
 - All facets are lit from the top left, matching the orbs and the other project logos. Before, the pyramids were lit from the right.

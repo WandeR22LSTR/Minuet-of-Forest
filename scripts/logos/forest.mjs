@@ -1,13 +1,10 @@
-// Builds the forest medallion logo from one blade definition, in two versions:
+// Minuet of Forest: the forest medallion, in two versions from one blade definition:
 //   medallion: twelve-sided plate, engraved rune band, recessed face, three blades
-//   mark:      the three blades alone on a tile, in the style of the Prelude of Light mark
+//   mark:      the three blades alone on the shared tile
 // Geometry is normalised: plate circumradius 1, centre 0,0, y pointing down.
-// Depth comes from a small 3D model: each blade is a ridge of height H between its
-// outer and inner edge, lit from the top left and shaded in thin strips.
-//
-// Usage: node scripts/make-logo.mjs [outDir]   (default: src/assets/logo)
-import { writeFile, mkdir } from "node:fs/promises";
-import { pathToFileURL } from "node:url";
+// Depth: each blade is a ridge of height RIDGE_HEIGHT between its outer and inner edge,
+// shaded in thin strips with the shared light (engine.mjs). Spec: docs/logo.md.
+import { norm, cross, sub, rot, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 
 // One blade, from its inner tip (near the centre) to its outer tip, sweeping clockwise.
 // Fitted to the reference: the three blades of the original averaged into one.
@@ -22,37 +19,12 @@ const BLADE = {
 const PLATE = { chamfer: 0.962, band: 0.771, face: 0.68 };
 const PLATE_COMPACT = { chamfer: 0.95, band: 0.87, face: 0.795 };
 const RIDGE_HEIGHT = 0.075;
-const LIGHT = norm([-0.55, -0.7, 0.85]);
-const HALF = norm([LIGHT[0], LIGHT[1], LIGHT[2] + 1]);
 
 // Tone ramp built around the site palette (forest #1f4d34, link #2d6a46, sage #dfe9d6).
-const RAMP = [
+const { shade, deepest } = ramp([
   [0.0, "#0a2214"], [0.2, "#153a26"], [0.34, "#1f4d34"], [0.48, "#2d6a46"],
   [0.62, "#3a8650"], [0.76, "#5ea866"], [0.9, "#a0d388"], [1.0, "#e2f2cf"],
-];
-
-function norm(v) { const l = Math.hypot(...v); return v.map((x) => x / l); }
-const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-const sub = (a, b) => a.map((x, i) => x - b[i]);
-const rot = ([x, y], deg) => { const t = (deg * Math.PI) / 180; return [x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t)]; };
-
-function hex(c) { return [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)); }
-function tone(v) {
-  v = Math.min(1, Math.max(0, v));
-  for (let i = 1; i < RAMP.length; i++) {
-    if (v <= RAMP[i][0]) {
-      const [a, ca] = RAMP[i - 1], [b, cb] = RAMP[i], t = (v - a) / (b - a);
-      const [x, y] = [hex(ca), hex(cb)];
-      return "#" + x.map((c, k) => Math.round(c + (y[k] - c) * t).toString(16).padStart(2, "0")).join("");
-    }
-  }
-  return RAMP.at(-1)[1];
-}
-/** Lambert + Blinn-Phong for a unit normal. `exposure` shifts the whole ramp. */
-function shade(n, { ambient = 0.16, diffuse = 0.62, spec = 0.3, shine = 22, exposure = 0 } = {}) {
-  return tone(ambient + diffuse * Math.max(0, dot(n, LIGHT)) + spec * Math.max(0, dot(n, HALF)) ** shine + exposure);
-}
+]);
 
 // Centripetal Catmull-Rom through the points (ends extended by reflection), then arc-length resampled.
 function smooth(pts, per = 16) {
@@ -98,14 +70,6 @@ function bladeEdges(curve, n) {
   };
   return { O: f(BLADE.outer), R: f(BLADE.ridge), I: f(BLADE.inner) };
 }
-
-// --- SVG helpers -------------------------------------------------------------
-function svgDoc({ size = 512, body, defs = "", title }) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">` +
-    (title ? `<title>${title}</title>` : "") + (defs ? `<defs>${defs}</defs>` : "") + body + `</svg>\n`;
-}
-const f1 = (v) => (Math.round(v * 10) / 10).toString();
-const pathOf = (pts, close = true) => "M" + pts.map((p) => f1(p[0]) + " " + f1(p[1])).join("L") + (close ? "Z" : "");
 
 /** Outline of each of the three blades, in normalised coordinates. */
 function bladeOutlines({ curve = SMOOTHNESS, rotate = 0, n = 64 } = {}) {
@@ -202,7 +166,7 @@ function runes(place, { width = 0.0135, light }) {
   for (const base of [-90, 90]) { lines.push(map(CENTRE_GLYPHS.ring, base, 1)); lines.push(map(CENTRE_GLYPHS.stem, base, 1)); }
   for (const base of [0, 180]) lines.push(map(CENTRE_GLYPHS.box, base, 1));
   const px = Math.abs(place([width, 0])[0] - place([0, 0])[0]);
-  const lit = shade(norm([0.6, 0.75, 0.5]), light), core = RAMP[0][1];
+  const lit = shade(norm([0.6, 0.75, 0.5]), light), core = deepest;
   const d = lines.map((l) => pathOf(l, false)).join("");
   const off = lines.map((l) => pathOf(l.map(([x, y]) => [x + px * 0.5, y + px * 0.55]), false)).join("");
   const st = `fill="none" stroke-width="${f1(px)}" stroke-linejoin="miter" stroke-linecap="square"`;
@@ -223,8 +187,8 @@ function medallion({ size = 512, curve = SMOOTHNESS, compact = false, strips = 6
   const b = blades(([x, y]) => place([x * k, y * k]), {
     curve, strips,
     light: { ambient: 0.08, diffuse: 0.74, spec: 0.3, exposure: 0.02 },
-    shadow: { dx: cast.dx * 0.55, dy: cast.dy * 0.55, color: RAMP[0][1], opacity: 0.5 },
-    edge: { color: RAMP[0][1], opacity: 0.35, width: f1(R * 0.006) },
+    shadow: { dx: cast.dx * 0.55, dy: cast.dy * 0.55, color: deepest, opacity: 0.5 },
+    edge: { color: deepest, opacity: 0.35, width: f1(R * 0.006) },
   });
   const body =
     `<path d="${pathOf(gon(1).map(place))}" fill="url(#${id}-sheen)"/>` +
@@ -234,7 +198,7 @@ function medallion({ size = 512, curve = SMOOTHNESS, compact = false, strips = 6
     slopedRing(place, plate.band, plate.face, -62, { exposure: -0.12 }) +
     `<path d="${pathOf(face)}" fill="url(#${id}-well)"/>` +
     // Shadow cast by the bevel wall onto the recessed face, then by the blades.
-    `<g clip-path="url(#${id}-face)"><path d="${pathOf(face)}${pathOf(face.map(([x, y]) => [x + cast.dx, y + cast.dy]))}" fill-rule="evenodd" fill="${RAMP[0][1]}" fill-opacity="0.4"/>${b.back}</g>` +
+    `<g clip-path="url(#${id}-face)"><path d="${pathOf(face)}${pathOf(face.map(([x, y]) => [x + cast.dx, y + cast.dy]))}" fill-rule="evenodd" fill="${deepest}" fill-opacity="0.4"/>${b.back}</g>` +
     b.front;
   return svgDoc({ size, defs, body, title: "Forest medallion" });
 }
@@ -246,37 +210,18 @@ function bladeBox(curve) {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), r: Math.max(...pts.map((p) => Math.hypot(...p))) };
 }
 
-function mark({ size = 512, curve = SMOOTHNESS, tile = true, strips = 64, fill = 0.4, id = "fk" } = {}) {
-  // Optical centring: move three quarters of the way from the rotation centre to the box centre.
-  const box = bladeBox(curve), S = (size * fill) / box.r;
-  const ox = -((box.x0 + box.x1) / 2) * 0.75, oy = -((box.y0 + box.y1) / 2) * 0.75;
-  const place = ([x, y]) => [size / 2 + (x + ox) * S, size / 2 + (y + oy) * S];
-  const defs =
-    `<linearGradient id="${id}-tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f8ef"/><stop offset="1" stop-color="#e1eada"/></linearGradient>` +
-    `<filter id="${id}-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${f1(size * 0.012)}"/></filter>`;
+function mark({ size = 512, curve = SMOOTHNESS, tile = true, square = false, strips = 64, fill = 0.4, id = "fk" } = {}) {
+  const box = bladeBox(curve);
+  const place = placement(size, { extent: box.r, box, fill });
   const b = blades(place, {
     curve, strips,
     light: { ambient: 0.12, diffuse: 0.68, spec: 0.2, exposure: -0.03 },
-    shadow: { dx: size * 0.012, dy: size * 0.02, color: "#1f4d34", opacity: 0.24, filter: `${id}-soft` },
+    shadow: { dx: size * SHADOW_OFFSET.dx, dy: size * SHADOW_OFFSET.dy, color: "#1f4d34", opacity: 0.24, filter: `${id}-soft` },
   });
-  const body = (tile ? `<rect width="${size}" height="${size}" rx="${f1(size * 0.22)}" fill="url(#${id}-tile)"/>` : "") + b.back + b.front;
+  const defs = tileDefs(id, TILE) + softDefs(id, size);
+  const body = (tile ? tileRect(id, size, { square }) : "") + b.back + b.front;
   return svgDoc({ size, defs, body, title: "Forest medallion mark" });
 }
 
-export { bladeOutlines, gon, PLATE, medallion, mark, SMOOTHNESS };
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const out = process.argv[2] ?? "src/assets/logo";
-  await mkdir(out, { recursive: true });
-  const files = {
-    "medallion.svg": medallion(),
-    "medallion-compact.svg": medallion({ compact: true, strips: 20 }),
-    "mark-compact.svg": mark({ strips: 20 }),
-    "mark.svg": mark(),
-    "mark-bare.svg": mark({ tile: false, strips: 32 }),
-  };
-  for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
-  // The tab icon and bookmarks use the compact mark.
-  if (!process.argv[2]) await writeFile("public/favicon.svg", files["mark-compact.svg"]);
-  console.log(`wrote ${Object.keys(files).length} files to ${out}`);
-}
+export const TILE = ["#f4f8ef", "#e1eada"];
+export { bladeOutlines, gon, PLATE, SMOOTHNESS, medallion, mark };

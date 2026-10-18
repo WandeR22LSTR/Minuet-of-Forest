@@ -87,8 +87,15 @@ function resample(line, n) {
 }
 
 /** Blade edges sampled at matching parameters: outer, ridge, inner (n+1 points each). */
+// Smoothness 0 keeps the straight segments of the game model (low-poly); 1 is a smooth spline
+// through the same points (like the drawn reference). The logo uses a middle ground.
+const SMOOTHNESS = 0.3;
+
 function bladeEdges(curve, n) {
-  const f = (pts) => resample(curve === "facet" ? pts : smooth(pts), n);
+  const f = (pts) => {
+    const a = resample(pts, n), b = resample(smooth(pts), n);
+    return a.map((p, i) => [p[0] + (b[i][0] - p[0]) * curve, p[1] + (b[i][1] - p[1]) * curve]);
+  };
   return { O: f(BLADE.outer), R: f(BLADE.ridge), I: f(BLADE.inner) };
 }
 
@@ -101,13 +108,13 @@ const f1 = (v) => (Math.round(v * 10) / 10).toString();
 const pathOf = (pts, close = true) => "M" + pts.map((p) => f1(p[0]) + " " + f1(p[1])).join("L") + (close ? "Z" : "");
 
 /** Outline of each of the three blades, in normalised coordinates. */
-function bladeOutlines({ curve = "smooth", rotate = 0, n = 64 } = {}) {
+function bladeOutlines({ curve = SMOOTHNESS, rotate = 0, n = 64 } = {}) {
   const { O, I } = bladeEdges(curve, n);
   return [0, 120, 240].map((a) => [...O, ...I.slice(1, -1).reverse()].map((p) => rot(p, a + rotate)));
 }
 
 /** Three shaded blades. `place` maps normalised coordinates to pixels. */
-function blades(place, { curve = "smooth", strips = 64, rotate = 0, light = {}, shadow, edge } = {}) {
+function blades(place, { curve = SMOOTHNESS, strips = 64, rotate = 0, light = {}, shadow, edge } = {}) {
   let back = "", front = "";
   const outlines = bladeOutlines({ curve, rotate, n: strips });
   for (const [b, a] of [0, 120, 240].entries()) {
@@ -202,7 +209,7 @@ function runes(place, { width = 0.0135, light }) {
   return `<path d="${off}" ${st} stroke="${lit}"/><path d="${d}" ${st} stroke="${core}"/>`;
 }
 
-function medallion({ size = 512, curve = "smooth", compact = false, strips = 64, id = "fm" } = {}) {
+function medallion({ size = 512, curve = SMOOTHNESS, compact = false, strips = 64, id = "fm" } = {}) {
   const R = size / 2 - size * 0.01, C = size / 2;
   const plate = compact ? PLATE_COMPACT : PLATE, k = plate.face / PLATE.face;
   const place = ([x, y]) => [C + x * R, C + y * R];
@@ -239,7 +246,7 @@ function bladeBox(curve) {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), r: Math.max(...pts.map((p) => Math.hypot(...p))) };
 }
 
-function mark({ size = 512, curve = "smooth", tile = true, strips = 64, fill = 0.4, id = "fk" } = {}) {
+function mark({ size = 512, curve = SMOOTHNESS, tile = true, strips = 64, fill = 0.4, id = "fk" } = {}) {
   // Optical centring: move three quarters of the way from the rotation centre to the box centre.
   const box = bladeBox(curve), S = (size * fill) / box.r;
   const ox = -((box.x0 + box.x1) / 2) * 0.75, oy = -((box.y0 + box.y1) / 2) * 0.75;
@@ -256,7 +263,7 @@ function mark({ size = 512, curve = "smooth", tile = true, strips = 64, fill = 0
   return svgDoc({ size, defs, body, title: "Forest medallion mark" });
 }
 
-export { bladeOutlines, gon, PLATE, medallion, mark };
+export { bladeOutlines, gon, PLATE, medallion, mark, SMOOTHNESS };
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const out = process.argv[2] ?? "src/assets/logo";
@@ -266,10 +273,10 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     "medallion-compact.svg": medallion({ compact: true, strips: 20 }),
     "mark-compact.svg": mark({ strips: 20 }),
     "mark.svg": mark(),
-    "mark-bare.svg": mark({ tile: false }),
-    "medallion-facet.svg": medallion({ curve: "facet" }),
-    "mark-facet.svg": mark({ curve: "facet" }),
+    "mark-bare.svg": mark({ tile: false, strips: 32 }),
   };
   for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
+  // The tab icon and bookmarks use the compact mark.
+  if (!process.argv[2]) await writeFile("public/favicon.svg", files["mark-compact.svg"]);
   console.log(`wrote ${Object.keys(files).length} files to ${out}`);
 }

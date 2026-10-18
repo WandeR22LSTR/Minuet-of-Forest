@@ -2,7 +2,7 @@
 
 Status: **in use since 0.6.1**. B (the mark) is used in the site and docs headers, the browser tab, bookmarks, the touch icon and link previews. A (the compact medallion) sits in the footer next to the site version. Both use the mostly low-poly style (`SMOOTHNESS = 0.3`). Use `src/components/Logo.astro` (`variant="mark" | "bare" | "medallion"`) rather than the files directly.
 
-Everything is generated from one blade definition in `scripts/logos/forest.mjs`, using the shared engine `scripts/logos/engine.mjs` (light, tone ramps, tile, shadow, rasters) that the other project logos use too. Change the numbers there, then run `node scripts/make-logos.mjs forest`. It writes `src/assets/logo/` and the icon set in `public/`: favicon.svg/.ico, touch icon, 192/512 icons, web manifest and the link-preview image. Never hand-edit the generated files.
+Everything is generated from one blade definition in `scripts/logos/forest.mjs`, using the shared engine `scripts/logos/engine.mjs` (light, tone ramps, tile, shadow, pyramids and orbs, rasters) and the shared plate `scripts/logos/plate.mjs` (twelve-gon, rune band, bevel, recessed face) that the other project logos use too. Change the numbers there, then run `node scripts/make-logos.mjs forest`. It writes `src/assets/logo/` and the icon set in `public/`: favicon.svg/.ico, touch icon, 192/512 icons, web manifest and the link-preview image. Never hand-edit the generated files.
 
 ## Versions
 

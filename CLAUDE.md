@@ -23,7 +23,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 - `src/data/copy.yaml`: all site copy, as `[placeholders]` until Luca writes it
 - `src/data/*.yaml`: resume, CV, projects, contact
 - `src/content/pages/*.md`: about, research, now. `src/content/docs/docs/`: Starlight docs
-- `scripts/`: PDF build, dist checks, accessibility, privacy scan, todo listing; `scripts/logos/`: shared logo engine and one file per project
+- `scripts/`: PDF build, dist checks, accessibility, privacy scan, todo listing; `scripts/logos/`: shared logo engine (`engine.mjs`), medallion plate (`plate.mjs`) and one file per project
 - `logos/`: generated logo sets for Luca's other projects (not part of the site build)
 
 ## Commands
@@ -36,7 +36,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 | `npm run a11y` | axe, 360px overflow, keyboard walkthrough, medallion |
 | `npm run scan` | Repo and build scan for never-publish identifiers |
 | `npm run todos` | Every remaining `TODO(Luca)`, `[placeholder]` and draft page |
-| `node scripts/make-logos.mjs [forest\|light]` | Regenerate project logos: this site's (`src/assets/logo/`, icons in `public/`) and other projects' (`logos/<project>/`). Spec: `docs/logo.md` |
+| `node scripts/make-logos.mjs [forest\|light\|shadow]` | Regenerate project logos: this site's (`src/assets/logo/`, icons in `public/`) and other projects' (`logos/<project>/`). Spec: `docs/logo.md` |
 
 Set `CHROMIUM_PATH` to use an installed Chromium instead of `npx playwright install chromium`.
 

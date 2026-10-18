@@ -7,5 +7,6 @@ the project that uses them. Regenerate with `node scripts/make-logos.mjs <projec
 | Folder | Project | Source |
 |---|---|---|
 | `prelude-of-light/` | Prelude of Light | `scripts/logos/light.mjs` |
+| `nocturne-of-shadow/` | Nocturne of Shadow | `scripts/logos/shadow.mjs` |
 
 The emblems are original drawings based on the medallions from *The Legend of Zelda: Ocarina of Time* (Nintendo).

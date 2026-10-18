@@ -1,0 +1,31 @@
+# Single source of truth for /resume/ and /resume.pdf.
+# Any value containing TODO(Luca) is left out of the web page and the PDF;
+# a section whose items are all TODO disappears. Do not invent entries.
+name: Luca
+headline: "TODO(Luca): one-line headline"
+email: "TODO(Luca): email to show"
+github: https://github.com/WandeR22LSTR
+sections:
+  - title: Education
+    items:
+      - title: "TODO(Luca): degree"
+        org: "TODO(Luca): institution"
+        location: "TODO(Luca)"
+        dates: "TODO(Luca): start to end"
+        bullets:
+          - "TODO(Luca)"
+  - title: Research experience
+    items:
+      - title: "TODO(Luca): GRB research position title"
+        org: "TODO(Luca): group / institution"
+        dates: "TODO(Luca)"
+        bullets:
+          - "TODO(Luca): what you did, wording checked with your PI"
+  - title: Projects
+    items:
+      - title: "TODO(Luca): Temple of Time (once the public summary is approved)"
+        bullets:
+          - "TODO(Luca)"
+  - title: Skills
+    items:
+      - title: "TODO(Luca): e.g. languages, tools"

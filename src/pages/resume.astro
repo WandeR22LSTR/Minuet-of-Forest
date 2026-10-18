@@ -1,0 +1,8 @@
+---
+import Base from "../layouts/Base.astro";
+import ResumeView from "../components/ResumeView.astro";
+import raw from "../data/resume.yaml?raw";
+---
+<Base title="Resume" description="Resume of Luca (WandeR). Also available as a PDF." minimal>
+  <ResumeView raw={raw} pdf="/resume.pdf" pageTitle="Resume" />
+</Base>

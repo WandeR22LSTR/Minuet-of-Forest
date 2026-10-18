@@ -1,0 +1,15 @@
+---
+import { parse } from "yaml";
+import raw from "../data/contact.yaml?raw";
+import Base from "../layouts/Base.astro";
+import { clean } from "../lib/site";
+import { GITHUB_URL } from "../../site.config.mjs";
+const c = (clean(parse(raw)) ?? {}) as { email?: string };
+---
+<Base title="Contact" description="How to reach Luca.">
+  <h1>Contact</h1>
+  <ul>
+    {c.email && <li>Email: <a href={`mailto:${c.email}`}>{c.email}</a></li>}
+    <li>GitHub: <a href={GITHUB_URL}>WandeR22LSTR</a></li>
+  </ul>
+</Base>

@@ -1,0 +1,8 @@
+# Projects listed on /projects/. status: live | building
+# Any field containing TODO(Luca) is hidden from the built site.
+- name: Temple of Time
+  status: building
+  # Luca must approve the public summary (docs/temple-of-time-summary.md) before filling this in.
+  summary: "TODO(Luca): one or two sentences, from the approved public summary."
+  link: /docs/temple-of-time/overview/
+  link_label: Read the write-up

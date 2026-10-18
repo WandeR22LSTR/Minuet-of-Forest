@@ -1,0 +1,20 @@
+---
+// Markdown pages (about, research, now). Drafts are only built in development.
+import { render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { publishedPages } from "../lib/site";
+
+export async function getStaticPaths() {
+  return (await publishedPages()).map((entry) => ({ params: { page: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const fmt = (d: Date) => d.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+---
+<Base title={entry.data.title} description={entry.data.description} draft={entry.data.draft}>
+  <article>
+    <h1>{entry.data.title}</h1>
+    {entry.data.updated && <p class="muted">Last updated <time datetime={entry.data.updated.toISOString().slice(0, 10)}>{fmt(entry.data.updated)}</time></p>}
+    <Content />
+  </article>
+</Base>

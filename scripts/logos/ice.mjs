@@ -11,7 +11,9 @@ import { plateMedallion, gon } from "./plate.mjs";
 // One crystal pointing right (+x), double-terminated like a quartz crystal: a short point at
 // the centre, a crease where the body starts, the body widening slightly to the shoulders, then
 // a single pyramid cap to the outer tip. [distance from centre, half-width], from the render.
-const CRYSTAL = { inner: 0.02, base: [0.21, 0.096], shoulder: [0.5, 0.163], tip: 0.65 };
+// The inner points stop short of the centre, leaving a small open hub where the channels
+// between the crystals meet, as in the original.
+const CRYSTAL = { inner: 0.07, base: [0.21, 0.096], shoulder: [0.5, 0.163], tip: 0.65 };
 const RIDGE = 0.08;
 const ANGLES = [-90, -30, 30, 90, 150, 210];
 

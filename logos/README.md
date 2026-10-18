@@ -8,6 +8,7 @@ the project that uses them. Regenerate with `node scripts/make-logos.mjs <projec
 |---|---|---|
 | `prelude-of-light/` | Prelude of Light | `scripts/logos/light.mjs` |
 | `nocturne-of-shadow/` | Nocturne of Shadow | `scripts/logos/shadow.mjs` |
+| `ice-cavern/` | Ice Cavern | `scripts/logos/ice.mjs` |
 
 ## Handoffs
 `handoffs/` holds ready-to-use zips for each project's own Claude Code session, with directions (`HANDOFF.md` inside; the `.md` beside each zip is a copy for reading here):

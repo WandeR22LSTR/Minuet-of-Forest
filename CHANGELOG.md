@@ -11,6 +11,7 @@ Bump it with every release and add an entry here.
 - Nocturne of Shadow logo: shadow medallion mark and full medallion (`logos/nocturne-of-shadow/`).
   The hidden footer link to Nocturne now uses the mark instead of a placeholder circle.
 - Prelude of Light full medallion (light and dark), plus large renders.
+- Ice Cavern logo: the water medallion in an ice palette, with a frozen full medallion (`logos/ice-cavern/`).
 - Handoff zips for the Prelude and Nocturne sessions in `logos/handoffs/`.
 - Fix: with `NOCTURNE_URL` set, the footer no longer overflows at 360px.
 

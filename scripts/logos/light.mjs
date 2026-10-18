@@ -1,6 +1,7 @@
 // Prelude of Light: the light medallion's emblem (three orbs, three faceted pyramids), no disc.
 // Positions were measured from the Light Medallion and mapped into a 64-unit square.
-import { ramp, emblemMark } from "./engine.mjs";
+import { ramp, emblem, emblemMark, f1 } from "./engine.mjs";
+import { plateMedallion } from "./plate.mjs";
 
 const SHAPE = {
   // Outline triangle (apex, base left, base right), then the peak's position inside it.
@@ -30,4 +31,22 @@ export const THEMES = {
 
 export function mark({ theme = "light", size = 512, fill = 0.4, square = false, id = `pl-${theme}` } = {}) {
   return emblemMark(SHAPE, { size, fill, square, id, theme: THEMES[theme], title: "Light medallion mark" });
+}
+
+// Full medallion: the emblem on the shared plate. The 64-unit square is centred on (32, 32) and
+// scaled so the emblem's farthest point (the bottom pyramid's base corners, 25.1 units out)
+// sits at 0.6 of the plate radius, inside the recessed face.
+const EMBLEM_SCALE = 0.6 / 25.1;
+export function medallion({ theme = "light", size = 512, compact = false, id = `plm-${theme}` } = {}) {
+  const r = THEMES[theme].ramp;
+  return plateMedallion({
+    size, compact, id, ramp: r, title: "Light medallion",
+    content: (place, cast) => {
+      const p = ([x, y]) => place([(x - 32) * EMBLEM_SCALE, (y - 32) * EMBLEM_SCALE]);
+      p.scale = (place([1, 0])[0] - place([0, 0])[0]) * EMBLEM_SCALE;
+      const e = emblem(p, { ...SHAPE, ramp: r, model: { ambient: 0.08, diffuse: 0.74, spec: 0.3, exposure: 0.02 }, id });
+      const back = `<g transform="translate(${f1(cast.dx * 0.55)} ${f1(cast.dy * 0.55)})" fill="${r.deepest}" fill-opacity="0.5">${e.silhouettes}</g>`;
+      return { back, front: e.body, defs: e.defs };
+    },
+  });
 }

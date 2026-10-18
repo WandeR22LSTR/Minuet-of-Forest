@@ -65,6 +65,13 @@ if (want("light")) {
   await mkdir(out, { recursive: true });
   await writeFile(`${out}/logo-light.svg`, light.mark({ theme: "light" }));
   await writeFile(`${out}/logo-dark.svg`, light.mark({ theme: "dark" }));
+  // Full medallion (footer, large display), per theme, plus a compact one for small sizes.
+  for (const theme of ["light", "dark"]) {
+    await writeFile(`${out}/medallion-${theme}.svg`, light.medallion({ theme }));
+    await writeFile(`${out}/medallion-${theme}-compact.svg`, light.medallion({ theme, compact: true }));
+  }
+  // Large transparent renders, kept for future use.
+  await renderPngs(["light", "dark"].map((theme) => ({ svg: light.medallion({ theme }), size: 1024, path: `${out}/medallion-${theme}-1024.png` })));
   // Bookmarks can't switch themes, so the raster set uses the light logo.
   await rasters(out, { square: light.mark({ theme: "light", square: true }), tile: light.mark({ theme: "light" }) });
   await writeFile(`${out}/site.webmanifest`, manifest("Prelude of Light", "Prelude", light.THEMES.light.tile[0]));

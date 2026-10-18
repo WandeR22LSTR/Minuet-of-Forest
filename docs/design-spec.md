@@ -19,7 +19,7 @@ Type: system font stack for body text. Display font for headings, card titles an
 ### Logo
 See `docs/logo.md`. Earlier flat version, replaced in 0.6.1:
 
-Flat forest medallion (`src/components/Logo.astro`, `public/favicon.svg`), in the style of the Prelude of Light mark: an icon tile next to the title in the display font, no rendered/3D medallion. Colors: ring `--forest`, disc `--link`, blades `#b9d89a`, accents `#7fae6a`, tile `#e6eedf`. It appears in the site header, docs header, home hero, 404, favicon, touch icon and Open Graph image; not in the PDFs. After changing it, update `favicon.svg` to match and run `node scripts/make-icons.mjs`.
+Flat forest medallion (`src/components/Logo.astro`, `public/favicon.svg`), in the style of the Prelude of Light mark: an icon tile next to the title in the display font, no rendered/3D medallion. Colors: ring `--forest`, disc `--link`, blades `#b9d89a`, accents `#7fae6a`, tile `#e6eedf`. It appears in the site header, docs header, home hero, 404, favicon, touch icon and Open Graph image; not in the PDFs.
 
 Resume PDF stays white with the same forest green accents.
 

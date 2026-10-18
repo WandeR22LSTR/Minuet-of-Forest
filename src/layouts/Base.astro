@@ -1,9 +1,11 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
-import { SITE_TITLE, SITE_DESCRIPTION, GITHUB_URL } from "../../site.config.mjs";
-import { url, navItems } from "../lib/site";
+import { SITE_TITLE, GITHUB_URL } from "../../site.config.mjs";
+import { url, navItems, copy } from "../lib/site";
 import Medallion from "../components/Medallion.astro";
+import Logo from "../components/Logo.astro";
+import SiteVersion from "../components/SiteVersion.astro";
 
 interface Props {
   title?: string;
@@ -12,7 +14,7 @@ interface Props {
   minimal?: boolean;
   draft?: boolean;
 }
-const { title, description = SITE_DESCRIPTION, minimal = false, draft = false } = Astro.props;
+const { title, description = copy.site.description, minimal = false, draft = false } = Astro.props;
 const fullTitle = title ? `${title} | ${SITE_TITLE}` : SITE_TITLE;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const nav = minimal ? [] : await navItems();
@@ -28,19 +30,23 @@ const here = Astro.url.pathname;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url("/apple-touch-icon.png")} />
     <link rel="sitemap" href={url("/sitemap-index.xml")} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_TITLE} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(url("/og-image.png"), Astro.site).href} />
+    <meta property="og:image:alt" content={`${SITE_TITLE} logo`} />
+    <meta name="twitter:card" content="summary_large_image" />
     {draft && <meta name="robots" content="noindex" />}
   </head>
   <body class={minimal ? "minimal" : undefined}>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href={url("/")}>{SITE_TITLE}</a>
+        <a class="brand" href={url("/")}><Logo size={40} />{SITE_TITLE}</a>
         {nav.length > 0 && (
           <nav class="site-nav" aria-label="Main">
             <ul>
@@ -62,8 +68,8 @@ const here = Astro.url.pathname;
     {!minimal && (
       <footer class="site-footer">
         <div class="wrap">
-          <p>© {new Date().getFullYear()} Luca · <a href={GITHUB_URL}>GitHub</a></p>
-          <Medallion />
+          <p>© {new Date().getFullYear()} Luca · <a href={GITHUB_URL}>GitHub</a> <Medallion /></p>
+          <SiteVersion />
         </div>
       </footer>
     )}

@@ -10,3 +10,13 @@
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color-scheme: light;
 }
+
+/* Hylia Serif (Omni Jacala, artsyomni.com/hyliaserif), self-hosted. ASCII only. */
+@font-face {
+  font-family: "Hylia Serif";
+  src: url("../assets/fonts/hylia-serif.woff2") format("woff2");
+  font-display: swap;
+}
+:root {
+  --font-display: "Hylia Serif", Georgia, "Times New Roman", serif;
+}

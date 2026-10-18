@@ -6,8 +6,8 @@ import { SITE } from "../../site.config.mjs";
 
 interface Item { title?: string; org?: string; location?: string; dates?: string; bullets?: string[] }
 interface Doc { name?: string; headline?: string; email?: string; github?: string; sections?: { title: string; items?: Item[] }[] }
-interface Props { raw: string; pdf: string; pageTitle: string }
-const { raw, pdf, pageTitle } = Astro.props;
+interface Props { raw: string; pdf: string; pageTitle: string; empty: string }
+const { raw, pdf, pageTitle, empty } = Astro.props;
 const d = (clean(parse(raw)) ?? {}) as Doc;
 const sections = (d.sections ?? []).filter((s) => s.items?.some((i) => i.title));
 const siteUrl = new URL(url("/"), SITE).href;
@@ -26,7 +26,7 @@ const host = (u: string) => u.replace(/^https?:\/\//, "").replace(/\/$/, "");
     </ul>
     <p class="actions"><a class="button" href={url(pdf)} download>Download PDF</a></p>
   </header>
-  {sections.length === 0 && <p class="muted">Being written. Check back soon.</p>}
+  {sections.length === 0 && <p class="muted">{empty}</p>}
   {sections.map((s) => (
     <section>
       <h2>{s.title}</h2>

@@ -1,0 +1,15 @@
+---
+// Footer badge: the forest medallion and the site version (package.json, see CHANGELOG.md).
+import pkg from "../../package.json";
+import Logo from "./Logo.astro";
+import { GITHUB_URL } from "../../site.config.mjs";
+---
+<a class="site-version" href={`${GITHUB_URL}/minuet-of-forest/blob/main/CHANGELOG.md`}>
+  <Logo variant="medallion" size={36} />
+  <span>v{pkg.version}</span>
+</a>
+<style>
+  .site-version { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--muted); text-decoration: none; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .site-version:hover span { text-decoration: underline; }
+  .site-version .logo { flex: none; opacity: 0.92; }
+</style>

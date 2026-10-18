@@ -1,7 +1,8 @@
 ---
 import { render } from "astro:content";
 import Base from "../layouts/Base.astro";
-import { url, publishedPages } from "../lib/site";
+import Logo from "../components/Logo.astro";
+import { url, publishedPages, copy } from "../lib/site";
 
 const pages = await publishedPages();
 const live = new Set(pages.map((p) => p.id));
@@ -9,22 +10,25 @@ const now = pages.find((p) => p.id === "now");
 // "Now" snippet: the first section of the now page, if it is published.
 const nowSnippet = now?.body?.split(/\n## /)[1]?.split("\n").filter(Boolean);
 const cards = [
-  { title: "Research", text: "Astrophysics research and interests.", href: live.has("research") ? "/research/" : undefined },
-  { title: "Projects", text: "Things I run and build.", href: "/projects/" },
-  { title: "Resume", text: "Web resume with a PDF download.", href: "/resume/" },
+  { title: "Research", text: copy.home.research, href: live.has("research") ? "/research/" : undefined },
+  { title: "Projects", text: copy.home.projects, href: "/projects/" },
+  { title: "Resume", text: copy.home.resume, href: "/resume/" },
 ];
 ---
 <Base>
-  <section aria-labelledby="intro">
-    <h1 id="intro">Hi, I'm Luca</h1>
-    <p>Also known as WandeR. This site collects my research, projects and resume.</p>
+  <section class="hero" aria-labelledby="intro">
+    <Logo variant="bare" size={96} />
+    <div>
+      <h1 id="intro">{copy.home.title}</h1>
+      <p>{copy.home.intro}</p>
+    </div>
   </section>
   <ul class="cards">
     {cards.map((c) => (
       <li class="card">
         <h2>{c.href ? <a href={url(c.href)}>{c.title}</a> : c.title}</h2>
         <p>{c.text}</p>
-        {!c.href && <p class="muted">Coming soon.</p>}
+        {!c.href && <p class="muted">{copy.home.research_pending}</p>}
       </li>
     ))}
   </ul>
@@ -32,7 +36,7 @@ const cards = [
     <section aria-labelledby="now">
       <h2 id="now">Now</h2>
       <p><strong>{nowSnippet[0]}:</strong> {nowSnippet.slice(1).join(" ")}</p>
-      <p><a href={url("/now/")}>More on the now page</a></p>
+      <p><a href={url("/now/")}>{copy.home.now_more}</a></p>
     </section>
   )}
 </Base>

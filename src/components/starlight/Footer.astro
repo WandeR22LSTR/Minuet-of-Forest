@@ -1,0 +1,9 @@
+---
+import Default from "@astrojs/starlight/components/Footer.astro";
+import SiteVersion from "../SiteVersion.astro";
+---
+<Default />
+<div class="docs-version"><SiteVersion /></div>
+<style>
+  .docs-version { display: flex; justify-content: flex-end; margin-top: 2rem; }
+</style>

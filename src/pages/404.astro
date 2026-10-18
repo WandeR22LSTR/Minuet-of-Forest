@@ -1,9 +1,13 @@
 ---
 import Base from "../layouts/Base.astro";
-import { url } from "../lib/site";
+import Logo from "../components/Logo.astro";
+import { url, copy } from "../lib/site";
 ---
-<Base title="Lost in the woods" description="Page not found.">
-  <h1>Lost in the woods</h1>
-  <p>This path winds deeper into the forest than any page goes. It may have moved, or never existed.</p>
-  <p><a href={url("/")}>Follow the song back home</a></p>
+<Base title={copy.not_found.title} description={copy.not_found.text}>
+  <section class="hero">
+    <Logo variant="bare" size={80} />
+    <h1>{copy.not_found.title}</h1>
+  </section>
+  <p>{copy.not_found.text}</p>
+  <p><a href={url("/")}>{copy.not_found.home}</a></p>
 </Base>

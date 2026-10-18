@@ -4,13 +4,15 @@
 // (circumradius 1, centre 0,0, y down).
 // Each crystal is a low-poly solid: a ridge along its axis, raised to RIDGE at the shoulders,
 // with a short pointed cap, so its facets are shaded by the shared light (engine.mjs).
-// The full medallion is "frozen": frosted facets over the recessed face.
+// The full medallion is "frozen": the recessed face is darkened like water under ice, with a soft frosted glow.
 import { norm, cross, sub, rot, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { plateMedallion, gon } from "./plate.mjs";
 
-// One crystal pointing right (+x): inner tip, shoulders, cap corners, outer tip.
-const CRYSTAL = { inner: 0.05, shoulder: [0.48, 0.2], cap: [0.59, 0.135], tip: 0.655 };
-const RIDGE = 0.09;
+// One crystal pointing right (+x), double-terminated like a quartz crystal: a short point at
+// the centre, a crease where the body starts, the body widening slightly to the shoulders, then
+// a single pyramid cap to the outer tip. [distance from centre, half-width], from the render.
+const CRYSTAL = { inner: 0.02, base: [0.21, 0.096], shoulder: [0.5, 0.163], tip: 0.65 };
+const RIDGE = 0.08;
 const ANGLES = [-90, -30, 30, 90, 150, 210];
 
 const iceRamp = ramp([
@@ -21,13 +23,14 @@ export const TILE = ["#f2f8fc", "#d9e9f4"];
 
 /** Facets of one crystal (3D points) and its outline, rotated to `deg`. */
 function crystal(deg) {
-  const { inner, shoulder: [su, sw], cap: [cu, cw], tip } = CRYSTAL;
+  const { inner, base: [bu, bw], shoulder: [su, sw], tip } = CRYSTAL;
   const P = (u, v, z = 0) => [...rot([u, v], deg), z];
-  const A = P(inner, 0), B = P(su, 0, RIDGE), C = P(cu, 0, RIDGE * 0.8), D = P(tip, 0);
-  const L1 = P(su, -sw), L2 = P(cu, -cw), R1 = P(su, sw), R2 = P(cu, cw);
+  // Ridge along the axis: flat at both points, raised along the body.
+  const A = P(inner, 0), C1 = P(bu, 0, RIDGE), C2 = P(su, 0, RIDGE), T = P(tip, 0);
+  const L1 = P(bu, -bw), L2 = P(su, -sw), R1 = P(bu, bw), R2 = P(su, sw);
   return {
-    facets: [[A, L1, B], [A, B, R1], [L1, L2, C, B], [B, C, R2, R1], [L2, D, C], [C, D, R2]],
-    outline: [A, L1, L2, D, R2, R1],
+    facets: [[A, L1, C1], [A, C1, R1], [L1, L2, C2, C1], [C1, C2, R2, R1], [L2, T, C2], [C2, T, R2]],
+    outline: [A, L1, L2, T, R2, R1],
   };
 }
 const CRYSTALS = ANGLES.map(crystal);
@@ -60,16 +63,11 @@ export function mark({ size = 512, fill = 0.4, square = false, id = "ic" } = {})
   return svgDoc({ size, defs: tileDefs(id, TILE) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Water medallion mark" });
 }
 
-/** Frost over the recessed face: twelve wedges from the centre in alternating white tints. */
-function frost(place) {
-  const face = gon(0.8);
-  // Deepen the face first, like dark water under the ice, so the crystals stand out.
-  let s = `<path d="${pathOf(face.map(place))}" fill="${iceRamp.deepest}" fill-opacity="0.28"/>`;
-  for (let k = 0; k < 12; k++) {
-    const op = [0.1, 0.03, 0.07, 0.02][k % 4];
-    s += `<path d="${pathOf([[0, 0], face[k], face[(k + 1) % 12]].map(place))}" fill="#ffffff" fill-opacity="${op}"/>`;
-  }
-  return s;
+/** Under the crystals: the face deepened like dark water under ice, with a soft frosted glow. */
+function frost(place, id) {
+  const face = gon(0.8).map(place);
+  return `<path d="${pathOf(face)}" fill="${iceRamp.deepest}" fill-opacity="0.28"/>` +
+    `<path d="${pathOf(face)}" fill="url(#${id}-frost)"/>`;
 }
 
 export function medallion({ size = 512, compact = false, id = "im" } = {}) {
@@ -77,10 +75,11 @@ export function medallion({ size = 512, compact = false, id = "im" } = {}) {
     size, compact, id, ramp: iceRamp, title: "Water medallion (frozen)",
     content: (place, cast) => {
       const e = draw(place, { ambient: 0.1, diffuse: 0.74, spec: 0.38, exposure: 0.04 });
-      const back = frost(place) + `<g transform="translate(${f1(cast.dx * 0.5)} ${f1(cast.dy * 0.5)})" fill="${iceRamp.deepest}" fill-opacity="0.45">${e.silhouettes}</g>`;
+      const back = frost(place, id) + `<g transform="translate(${f1(cast.dx * 0.5)} ${f1(cast.dy * 0.5)})" fill="${iceRamp.deepest}" fill-opacity="0.45">${e.silhouettes}</g>`;
       // A frosted rim of light on the crystals' edges.
       const rim = `<g fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="${f1(cast.R * 0.004)}" stroke-linejoin="round">${e.silhouettes}</g>`;
-      return { back, front: e.body + rim };
+      const defs = `<radialGradient id="${id}-frost" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
+      return { back, front: e.body + rim, defs };
     },
   });
 }

@@ -2,9 +2,11 @@
 
 The water medallion in an ice palette. Serenade of Water is taught at the end of the Ice Cavern, which ties the hub's name to the medallion. Source: `scripts/logos/ice.mjs`.
 
-- **Emblem.** Six faceted crystals radiating from the centre at 60° steps, the top one vertical, measured from the in-game medallion. Each is a low-poly solid: a ridge along its axis, a crease at the shoulders and a short pointed cap. It is lit from the top left like the other project logos.
+- **Emblem.** Six crystals radiating from the centre at 60° steps, the top one vertical, measured from the in-game medallion.
+  - Each is double-pointed like a quartz crystal: a short point at the centre, then a body that widens slightly to the shoulders at half the radius, then a single pyramid cap to the tip.
+  - A ridge runs along each crystal, so it has a lit side and a shadowed side, lit from the top left like the other project logos.
 - **Mark.** The crystals alone on a pale ice tile. At small sizes it reads as a snowflake.
-- **Medallion ("frozen").** The shared twelve-sided plate in the ice palette. The recessed face is darkened like water under ice and covered with frosted wedges, and the crystals get a faint white rim.
+- **Medallion ("frozen").** The shared twelve-sided plate in the ice palette. The recessed face is darkened like water under ice, with a soft frosted glow, and the crystals get a faint white rim.
 
 | File | Use |
 |---|---|

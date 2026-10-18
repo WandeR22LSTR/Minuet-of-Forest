@@ -14,7 +14,10 @@ Contrast (WCAG): text/bg 13.7, forest/bg 8.9, white on forest 9.7, forest on sag
 
 Light only for now (`color-scheme: light`). A small gold accent is reserved for the medallion logo in the theming pass.
 
-Type: system font stack; any added font must be self-hosted.
+Type: system font stack for body text. Display font for headings, card titles and the site title: **Hylia Serif Beta** (Omni Jacala, artsyomni.com/hyliaserif), self-hosted as `src/assets/fonts/hylia-serif.woff2` (`--font-display`). It covers ASCII only, so keep headings free of accented characters (they fall back to Georgia).
+
+### Logo
+Flat forest medallion (`src/components/Logo.astro`, `public/favicon.svg`), in the style of the Prelude of Light mark: an icon tile next to the title in the display font, no rendered/3D medallion. Colors: ring `--forest`, disc `--link`, blades `#b9d89a`, accents `#7fae6a`, tile `#e6eedf`. It appears in the site header, docs header, home hero, 404, favicon, touch icon and Open Graph image; not in the PDFs. After changing it, update `favicon.svg` to match and run `node scripts/make-icons.mjs`.
 
 Resume PDF stays white with the same forest green accents.
 

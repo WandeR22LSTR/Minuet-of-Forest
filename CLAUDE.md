@@ -34,6 +34,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 | `npm run a11y` | axe, 360px overflow, keyboard walkthrough, medallion |
 | `npm run scan` | Repo and build scan for never-publish identifiers |
 | `npm run todos` | Every remaining `TODO(Luca)` and draft page |
+| `node scripts/make-icons.mjs` | Regenerate touch icon and Open Graph image from the logo |
 
 Set `CHROMIUM_PATH` to use an installed Chromium instead of `npx playwright install chromium`.
 

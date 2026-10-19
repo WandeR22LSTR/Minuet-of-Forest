@@ -22,6 +22,8 @@ const iceRamp = ramp([
   [0.62, "#4f9cc9"], [0.76, "#8cc4e3"], [0.9, "#d2ecf8"], [1, "#ffffff"],
 ]);
 export const TILE = ["#f2f8fc", "#d9e9f4"];
+// Dark tile for a dark (navy / ink) interface.
+export const TILE_DARK = ["#12263a", "#08172a"];
 
 /** Facets of one crystal (3D points) and its outline, rotated to `deg`. */
 function crystal(deg) {
@@ -57,12 +59,13 @@ function box() {
   return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys), r: Math.max(...pts.map((p) => Math.hypot(p[0], p[1]))) };
 }
 
-export function mark({ size = 512, fill = 0.4, square = false, id = "ic" } = {}) {
+export function mark({ size = 512, fill = 0.4, square = false, dark = false, id = dark ? "icd" : "ic" } = {}) {
   const b = box();
   const place = placement(size, { extent: b.r, box: b, fill });
-  const e = draw(place, { ambient: 0.12, diffuse: 0.7, spec: 0.3, exposure: -0.04 });
-  const shadow = `<g transform="translate(${f1(size * SHADOW_OFFSET.dx)} ${f1(size * SHADOW_OFFSET.dy)})" fill="#0f3d63" fill-opacity="0.26" filter="url(#${id}-soft)">${e.silhouettes}</g>`;
-  return svgDoc({ size, defs: tileDefs(id, TILE) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Water medallion mark" });
+  const e = draw(place, { ambient: 0.12, diffuse: 0.7, spec: 0.3, exposure: dark ? 0.06 : -0.04 });
+  const [shadowColour, shadowOpacity] = dark ? ["#000000", 0.5] : ["#0f3d63", 0.26];
+  const shadow = `<g transform="translate(${f1(size * SHADOW_OFFSET.dx)} ${f1(size * SHADOW_OFFSET.dy)})" fill="${shadowColour}" fill-opacity="${shadowOpacity}" filter="url(#${id}-soft)">${e.silhouettes}</g>`;
+  return svgDoc({ size, defs: tileDefs(id, dark ? TILE_DARK : TILE) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Water medallion mark" });
 }
 
 /** Under the crystals: the face deepened like dark water under ice, with a soft frosted glow. */

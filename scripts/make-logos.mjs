@@ -103,6 +103,7 @@ if (want("ice")) {
   await mkdir(out, { recursive: true });
   const files = {
     "logo.svg": ice.mark(),
+    "logo-dark.svg": ice.mark({ dark: true }),
     "medallion.svg": ice.medallion(),
     "medallion-compact.svg": ice.medallion({ compact: true }),
   };

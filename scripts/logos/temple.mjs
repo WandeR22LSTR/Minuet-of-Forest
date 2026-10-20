@@ -1,8 +1,9 @@
 // Temple of Time: the Triforce above the Door of Time, as three raised gold triangles.
 // Each piece is a low-poly solid like the other project logos: a flat top raised RISE above
 // its outline, joined to it by three bevelled faces, so the facets are shaded by the shared
-// light (engine.mjs). The gold is Prelude of Light's; the tile and plate are the temple's
-// grey-blue stone, so the two logos read apart on the Ice Cavern doors.
+// light (engine.mjs). On the marks the Triforce is gold (Prelude of Light's) on a grey-blue
+// temple-stone tile, so the two logos read apart on the Ice Cavern doors. On the medallion it
+// is carved from the plate's own stone, like the other medallions' emblems.
 // Normalised: the whole Triforce has side 1, its centroid at 0,0, y down.
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { plateMedallion } from "./plate.mjs";
@@ -75,14 +76,15 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
 const LIFT = 0;
 const PLATE_SCALE = 0.665 / (1 / Math.sqrt(3));
 export function medallion({ size = 512, id = "ttm" } = {}) {
-  const gold = THEMES.light.gold;
   return plateMedallion({
     size, id, ramp: stone, title: "Triforce on the temple plate",
     content: (place, cast) => {
       const p = ([x, y]) => place([x * PLATE_SCALE, (y + LIFT) * PLATE_SCALE]);
-      const e = draw(p, gold, { ambient: 0.1, diffuse: 0.74, spec: 0.32, exposure: 0.04 });
+      const e = draw(p, stone, { ambient: 0.1, diffuse: 0.74, spec: 0.3, exposure: 0.02 });
       const back = `<g transform="translate(${f1(cast.dx * 0.55)} ${f1(cast.dy * 0.55)})" fill="${stone.deepest}" fill-opacity="0.5">${e.silhouettes}</g>`;
-      return { back, front: e.body };
+      // A thin dark edge, as on the forest medallion, keeps the pieces apart from the face.
+      const edge = `<g fill="none" stroke="${stone.deepest}" stroke-opacity="0.35" stroke-width="${f1(cast.R * 0.006)}" stroke-linejoin="round">${e.silhouettes}</g>`;
+      return { back, front: e.body + edge };
     },
   });
 }

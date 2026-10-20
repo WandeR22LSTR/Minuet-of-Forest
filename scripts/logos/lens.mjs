@@ -1,9 +1,10 @@
-// Lens of Truth: the in-game lens with the Sheikah eye. An octagonal faceted frame in purple
-// with three red spikes on top, violet glass with the Sheikah eye raised on it in crimson, and
-// the Sheikah symbol's teardrop as the handle, with a gold collar. All solids are lit by the
-// shared light (engine.mjs). One mark on a transparent background with a dark outline, like
-// Saria's Song's, so it reads on light and dark backgrounds.
-// Normalised: frame circumradius 1, centre 0,0, y down.
+// Lens of Truth: the Sheikah eye, in the Lens of Truth's colours. Drawn after the Sheikah
+// symbol: three spikes above (the symbol's triangles, as the lens's red spikes), the eye with
+// curled ends and an oval pupil, and a stem down to a teardrop. The eye is the pinkish red of
+// the eye on the lens's glass, the spikes the lens's deep red, the teardrop its purple.
+// Every part is a solid lit by the shared light (engine.mjs). One mark on a transparent
+// background with a dark outline, like Saria's Song's, so it reads on light and dark.
+// Coordinates are measured in a 512-unit drawing of the symbol (y down), centred on the eye.
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, placement, emblem } from "./engine.mjs";
 import { smooth } from "./forest.mjs";
 
@@ -11,29 +12,20 @@ const purple = ramp([
   [0, "#1a0630"], [0.2, "#33105c"], [0.34, "#4b1a85"], [0.48, "#6526a8"],
   [0.62, "#8240c8"], [0.76, "#a670de"], [0.9, "#d4b2f2"], [1, "#f6ecff"],
 ]);
-const crimson = ramp([
+// The spikes' deep red.
+const spikeRed = ramp([
   [0, "#2a0510"], [0.2, "#5a0c20"], [0.38, "#8c1632"], [0.55, "#b8233f"],
   [0.7, "#dc3d55"], [0.85, "#f17a86"], [1, "#ffe0e4"],
 ]);
-const gold = ramp([[0, "#4a3505"], [0.3, "#8a6614"], [0.55, "#c0952b"], [0.75, "#e0b947"], [0.9, "#f3d36c"], [1, "#fff4c8"]]);
+// The eye's pinkish red, from the eye on the lens's glass.
+const eyeRed = ramp([
+  [0, "#3a0418"], [0.2, "#6e0a2e"], [0.38, "#a8123f"], [0.55, "#d81b4f"],
+  [0.7, "#ef4a72"], [0.85, "#f88aa5"], [1, "#ffe3ec"],
+]);
 export const OUTLINE = "#1a0630";
 
-// Frame: an octagon with a flat top, in rings by circumradius.
-const FRAME = { chamfer: 0.94, band: 0.86, glass: 0.76 };
-const oct = (r) => Array.from({ length: 8 }, (_, k) => { const t = ((-112.5 + 45 * k) * Math.PI) / 180; return [r * Math.cos(t), r * Math.sin(t)]; });
-
-/** Ring of 8 sloped facets between radii r0 (outer) and r1 (inner); tilt > 0 faces outwards. */
-function ring(place, r0, r1, tilt, m) {
-  const a = oct(r0), b = oct(r1);
-  let s = "";
-  for (let k = 0; k < 8; k++) {
-    const mid = ((-90 + 45 * k) * Math.PI) / 180, t = (tilt * Math.PI) / 180;
-    const n = norm([Math.cos(mid) * Math.sin(t), Math.sin(mid) * Math.sin(t), Math.cos(t)]);
-    const c = purple.shade(n, m);
-    s += `<path d="${pathOf([a[k], a[(k + 1) % 8], b[(k + 1) % 8], b[k]].map(place))}" fill="${c}" stroke="${c}" stroke-width="0.6"/>`;
-  }
-  return s;
-}
+const C = [268, 250], U = 200; // the symbol's eye centre and unit, in its 512-unit drawing
+const n = ([x, y, w]) => [(x - C[0]) / U, (y - C[1]) / U, w / U];
 
 /**
  * A ribbon solid along a centreline: [x, y, width] points, smoothed, with a ridge down the
@@ -79,55 +71,42 @@ function drawRibbon(place, rb, r, m) {
   return { body: under + body, silhouette: `<path fill-rule="evenodd" d="${loops(rb.silhouette)}"/>`, filled: `<path d="${pathOf(rb.silhouette[0].map(place))}"/>` };
 }
 
-// The Sheikah eye on the glass: an almond outline and an oval pupil.
-const almond = (rx, ry, n = 24) => {
-  const up = [], down = [];
-  for (let i = 0; i <= n; i++) {
-    const x = -rx + (2 * rx * i) / n, y = ry * (1 - (x / rx) ** 2);
-    up.push([x, -y]); down.push([x, y]);
-  }
-  return [...up, ...down.reverse().slice(1, -1)];
-};
-const EYE = ribbon(almond(0.56, 0.27, 12).map(([x, y]) => [x, y + 0.02, 0.11]), { closed: true, ridge: 0.5 });
-const PUPIL = ribbon(Array.from({ length: 12 }, (_, k) => { const t = (2 * Math.PI * k) / 12; return [0.115 * Math.cos(t), 0.02 + 0.15 * Math.sin(t), 0.1]; }), { closed: true, ridge: 0.5 });
 
-// The handle: the Sheikah teardrop hanging from the frame, a narrow neck swelling to a bulb.
-const HANDLE = ribbon([[0, 0.9, 0.15], [0, 1.05, 0.13], [0, 1.2, 0.12], [0, 1.38, 0.16], [0, 1.55, 0.26], [0, 1.7, 0.3], [0, 1.82, 0.24], [0, 1.9, 0.1], [0, 1.93, 0]], { ridge: 0.45, per: 12 });
-const COLLAR = ribbon([[0, 1.0, 0.2], [0, 1.08, 0.2]], { ridge: 0.6, per: 2 });
+// Upper lid, running on into a curl at each end, and the lower lid (its ends hidden under the upper's).
+const UPPER = ribbon([[128, 250, 4], [117, 243, 12], [118, 232, 16], [135, 226, 17], [152, 228, 17], [190, 198, 17], [230, 183, 17], [268, 178, 17],
+  [306, 183, 17], [346, 198, 17], [384, 228, 17], [401, 226, 17], [418, 232, 16], [419, 243, 12], [408, 250, 4]].map(n), { ridge: 0.45 });
+const LOWER = ribbon([[156, 232, 12], [190, 268, 17], [230, 286, 17], [268, 291, 17], [306, 286, 17], [346, 268, 17], [380, 232, 12]].map(n), { ridge: 0.45 });
+const PUPIL = ribbon(Array.from({ length: 12 }, (_, k) => { const t = (2 * Math.PI * k) / 12; return n([268 + 24 * Math.cos(t), 232 + 32 * Math.sin(t), 14]); }), { closed: true, ridge: 0.45 });
+// Stem from the pupil down through the lower lid, swelling into the teardrop. It is round, so
+// it is shaded across its width (lit from the left) rather than with a ridge.
+const DROP = ribbon([[268, 262, 13], [268, 300, 13], [268, 330, 15], [268, 360, 30], [268, 395, 52], [268, 425, 58], [268, 445, 52], [268, 458, 40], [268, 466, 26], [268, 470, 12], [268, 471, 0]].map(n), { ridge: 0.45, per: 12 });
 
-// Spikes: three red pyramids on the frame's top edges, at the top and 50° either side.
-const SPIKES = [-90, -140, -40].map((deg) => {
+// The three spikes: at the top and 42° either side, radiating from the eye centre, clear of the lid.
+const SPIKES = [-90, -132, -48].map((deg) => {
   const t = (deg * Math.PI) / 180, u = [Math.cos(t), Math.sin(t)], v = [-u[1], u[0]];
-  const at = (r, s) => [u[0] * r + v[0] * s, u[1] * r + v[1] * s];
-  return [at(1.42, 0), at(0.9, -0.15), at(0.9, 0.15), at(1.02, 0)];
+  const at = (r, s) => [(u[0] * r + v[0] * s) / U, (u[1] * r + v[1] * s) / U];
+  return [at(184, 0), at(120, -30), at(120, 30), at(140, 0)];
 });
 
 function draw(place, m) {
-  const p = place;
-  // Spikes behind the frame.
-  const sp = emblem(p, { pyramids: SPIKES, peakHeight: 0.12, ramp: crimson, model: m });
-  const handle = drawRibbon(p, HANDLE, purple, m), collar = drawRibbon(p, COLLAR, gold, m);
-  const frame = `<path d="${pathOf(oct(1).map(p))}" fill="${purple.shade([0, 0, 1], m)}"/>` +
-    ring(p, 1, FRAME.chamfer, 55, m) +
-    `<path d="${pathOf(oct(FRAME.chamfer).map(p))}" fill="${purple.shade([0, 0, 1], { ...m, exposure: (m.exposure ?? 0) - 0.04 })}"/>` +
-    ring(p, FRAME.band, FRAME.glass, -55, { ...m, exposure: (m.exposure ?? 0) - 0.1 });
-  const glassPts = oct(FRAME.glass).map(p);
-  const glass = `<path d="${pathOf(glassPts)}" fill="url(#lt-glass)"/><path d="${pathOf(glassPts)}" fill="url(#lt-sheen)"/>`;
-  const eye = drawRibbon(p, EYE, crimson, m), pupil = drawRibbon(p, PUPIL, crimson, m);
-  // The eye's shadow on the glass.
-  const R = place.scale;
-  const shadow = `<g transform="translate(${f1(R * 0.02)} ${f1(R * 0.028)})" fill="#12031f" fill-opacity="0.45">${eye.silhouette}${pupil.silhouette}</g>`;
-  const defs = `<radialGradient id="lt-glass" cx="0.5" cy="0.5" r="0.6"><stop offset="0" stop-color="#7a4fc4"/><stop offset="0.7" stop-color="#4d2a92"/><stop offset="1" stop-color="#2e1563"/></radialGradient>` +
-    `<radialGradient id="lt-sheen" cx="0.32" cy="0.26" r="0.55"><stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
-  const silhouettes = sp.silhouettes + handle.filled + `<path d="${pathOf(oct(1).map(p))}"/>`;
-  return { defs, silhouettes, body: sp.body + handle.body + collar.body + frame + glass + shadow + eye.body + pupil.body };
+  const sp = emblem(place, { pyramids: SPIKES, peakHeight: 0.12, ramp: spikeRed, model: m });
+  const dropPath = pathOf(DROP.silhouette[0].map(place));
+  const [l, r] = [place(n([238, 0, 0])), place(n([298, 0, 0]))];
+  const tones = [[0, 0.62], [0.3, 0.9], [0.55, 0.6], [1, 0.22]].map(([o, v]) => `<stop offset="${o}" stop-color="${purple.tone(v + (m.exposure ?? 0))}"/>`).join("");
+  const drop = {
+    defs: `<linearGradient id="lt-drop" gradientUnits="userSpaceOnUse" x1="${f1(l[0])}" y1="0" x2="${f1(r[0])}" y2="0">${tones}</linearGradient>`,
+    body: `<path d="${dropPath}" fill="url(#lt-drop)"/>`,
+    silhouette: `<path d="${dropPath}"/>`,
+  };
+  const lower = drawRibbon(place, LOWER, eyeRed, m), upper = drawRibbon(place, UPPER, eyeRed, m), pupil = drawRibbon(place, PUPIL, eyeRed, m);
+  const silhouettes = sp.silhouettes + drop.silhouette + lower.silhouette + upper.silhouette + pupil.silhouette;
+  return { defs: drop.defs, silhouettes, body: sp.body + drop.body + lower.body + upper.body + pupil.body };
 }
 
-// Bounding box, from the spikes' tips to the handle's end.
-const BOX = { x0: -1.12, x1: 1.12, y0: -1.42, y1: 1.93 };
+const BOX = { x0: n([108, 0, 0])[0], x1: n([428, 0, 0])[0], y0: n([0, 66, 0])[1], y1: n([0, 471, 0])[1] };
 
-/** The lens on a transparent background with a dark outline: app icon, favicon, door. */
-export function bare({ size = 512, fill = 0.46, outline = 0.022 } = {}) {
+/** The eye on a transparent background with a dark outline: app icon, favicon, door. */
+export function bare({ size = 512, fill = 0.44, outline = 0.022 } = {}) {
   const extent = Math.max(BOX.x1 - BOX.x0, BOX.y1 - BOX.y0) / 2;
   const place = placement(size, { extent, box: BOX, origin: [(BOX.x0 + BOX.x1) / 2, (BOX.y0 + BOX.y1) / 2], fill });
   const e = draw(place, { ambient: 0.14, diffuse: 0.68, spec: 0.3 });

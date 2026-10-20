@@ -46,12 +46,12 @@ export const THEMES = {
 // Grey-blue stone of the Temple of Time, for the plate.
 const stone = ramp([[0, "#161b24"], [0.2, "#2a3240"], [0.34, "#3d4757"], [0.48, "#566273"], [0.62, "#75818f"], [0.76, "#9ba5b1"], [0.9, "#c9d0d8"], [1, "#f1f4f7"]]);
 
-/** Shaded pieces. `engraved` cuts them into the surface instead of raising them. */
-function draw(place, gold, m, { engraved = false } = {}) {
+/** Shaded pieces. `engraved` cuts them into the surface, `depth` times as deep as they are raised. */
+function draw(place, gold, m, { engraved = false, depth = 1 } = {}) {
   let silhouettes = "", body = "";
   for (const { facets, outline } of PIECES) {
     for (let f of facets) {
-      if (engraved) f = f.map(([x, y, z]) => [x, y, -z]);
+      if (engraved) f = f.map(([x, y, z]) => [x, y, -z * depth]);
       let n = cross(sub(f[1], f[0]), sub(f[2], f[0]));
       if (n[2] < 0) n = n.map((v) => -v);
       const c = gold.shade(norm(n), m);
@@ -73,19 +73,22 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
 }
 
 // On the plate the Triforce is centred on its centroid, so its three corners point at three of
-// the twelve-gon's vertices (top, lower left, lower right) and can sit right in them: 0.665 of
-// the plate radius, just inside the recessed face (0.68). Largest size that stays off the bevel.
+// the twelve-gon's vertices (top, lower left, lower right), at 0.58 of the plate radius: a clear
+// margin inside the recessed face (0.68).
 const LIFT = 0;
-const PLATE_SCALE = 0.665 / (1 / Math.sqrt(3));
+const PLATE_SCALE = 0.58 / (1 / Math.sqrt(3));
 export function medallion({ size = 512, id = "ttm" } = {}) {
   return plateMedallion({
     size, id, ramp: stone, title: "Triforce on the temple plate",
+    // Every cut in this medallion (runes, Triforce) is lit the same way: the lower-right wall of
+    // a groove faces the light, so its lip is bright; the bevel into the face is lighter too.
+    lighting: { runeLip: [-0.6, -0.75, 0.5], bevelExposure: -0.04 },
     content: (place, cast) => {
       const p = ([x, y]) => place([x * PLATE_SCALE, (y + LIFT) * PLATE_SCALE]);
       // Engraved into the face: the pieces are cut in, so the walls facing the light go dark
       // and the top-left walls cast a shadow onto each cut's floor. Nothing is cast outside.
-      const e = draw(p, stone, { ambient: 0.1, diffuse: 0.74, spec: 0.3, exposure: -0.02 }, { engraved: true });
-      const off = [cast.dx * 0.35, cast.dy * 0.35];
+      const e = draw(p, stone, { ambient: 0.1, diffuse: 0.74, spec: 0.3, exposure: -0.02 }, { engraved: true, depth: 2 });
+      const off = [cast.dx * 0.6, cast.dy * 0.6];
       let defs = "", inner = "";
       e.outlines.forEach((o, i) => {
         defs += `<clipPath id="${id}-cut${i}"><path d="${pathOf(o)}"/></clipPath>`;

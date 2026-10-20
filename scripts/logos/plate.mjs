@@ -46,7 +46,7 @@ const CENTRE_GLYPHS = {
   stem: [[0, 0.24], [0, 0.08]],
   box: [[-1.7, 0.3], [1.7, 0.3], [1.7, 0.74], [-1.7, 0.74], [-1.7, 0.3]],
 };
-function runes({ shade, deepest }, place, { width = 0.0135, light }) {
+function runes({ shade, deepest }, place, { width = 0.0135, light, lip = [0.6, 0.75, 0.5] }) {
   const lines = [];
   const map = (pts, base, dir) => {
     const dense = [];
@@ -63,7 +63,7 @@ function runes({ shade, deepest }, place, { width = 0.0135, light }) {
   for (const base of [-90, 90]) { lines.push(map(CENTRE_GLYPHS.ring, base, 1)); lines.push(map(CENTRE_GLYPHS.stem, base, 1)); }
   for (const base of [0, 180]) lines.push(map(CENTRE_GLYPHS.box, base, 1));
   const px = Math.abs(place([width, 0])[0] - place([0, 0])[0]);
-  const lit = shade(norm([0.6, 0.75, 0.5]), light), core = deepest;
+  const lit = shade(norm(lip), light), core = deepest;
   const d = lines.map((l) => pathOf(l, false)).join("");
   const off = lines.map((l) => pathOf(l.map(([x, y]) => [x + px * 0.5, y + px * 0.55]), false)).join("");
   const st = `fill="none" stroke-width="${f1(px)}" stroke-linejoin="miter" stroke-linecap="square"`;
@@ -76,7 +76,9 @@ function runes({ shade, deepest }, place, { width = 0.0135, light }) {
  * normalised coordinates (designed for the full plate's face) onto the face, scaled up on the
  * compact plate; it returns { back, front }, where `back` is clipped to the face (shadows).
  */
-export function plateMedallion({ size = 512, compact = false, id, ramp, title, content }) {
+// `lighting` lets a medallion opt into a lit groove lip (`runeLip`, the normal of the groove's
+// lower-right wall, which faces the light) and a lighter bevel (`bevelExposure`, default -0.12).
+export function plateMedallion({ size = 512, compact = false, id, ramp, title, content, lighting = {} }) {
   const { shade, deepest } = ramp;
   const R = size / 2 - size * 0.01, C = size / 2;
   const plate = compact ? PLATE_COMPACT : PLATE, k = plate.face / PLATE.face;
@@ -93,8 +95,8 @@ export function plateMedallion({ size = 512, compact = false, id, ramp, title, c
     `<path d="${pathOf(gon(1).map(place))}" fill="url(#${id}-sheen)"/>` +
     slopedRing(shade, place, 1, plate.chamfer, 55, {}) +
     `<path d="${pathOf(gon(plate.chamfer).map(place))}" fill="url(#${id}-sheen)"/>` +
-    (compact ? "" : runes(ramp, place, { width: 0.019, light: {} })) +
-    slopedRing(shade, place, plate.band, plate.face, -62, { exposure: -0.12 }) +
+    (compact ? "" : runes(ramp, place, { width: 0.019, light: {}, lip: lighting.runeLip })) +
+    slopedRing(shade, place, plate.band, plate.face, -62, { exposure: lighting.bevelExposure ?? -0.12 }) +
     `<path d="${pathOf(face)}" fill="url(#${id}-well)"/>` +
     // Shadow cast by the bevel wall onto the recessed face, then by the emblem.
     `<g clip-path="url(#${id}-face)"><path d="${pathOf(face)}${pathOf(face.map(([x, y]) => [x + cast.dx, y + cast.dy]))}" fill-rule="evenodd" fill="${deepest}" fill-opacity="0.4"/>${b.back}</g>` +

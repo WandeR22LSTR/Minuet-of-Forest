@@ -38,7 +38,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 | `npm run a11y` | axe, 360px overflow, keyboard walkthrough, medallion |
 | `npm run scan` | Repo and build scan for never-publish identifiers |
 | `npm run todos` | Every remaining `TODO(Luca)`, `[placeholder]` and draft page |
-| `node scripts/make-logos.mjs [forest\|light\|shadow\|ice]` | Regenerate project logos: this site's (`src/assets/logo/`, icons in `public/`) and other projects' (`logos/<project>/`). Spec: `docs/logo.md` |
+| `node scripts/make-logos.mjs [forest\|light\|shadow\|ice\|temple]` | Regenerate project logos: this site's (`src/assets/logo/`, icons in `public/`) and other projects' (`logos/<project>/`). Spec: `docs/logo.md` |
 
 Set `CHROMIUM_PATH` to use an installed Chromium instead of `npx playwright install chromium`.
 

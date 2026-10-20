@@ -4,6 +4,7 @@
 //   node scripts/make-logos.mjs light      Prelude of Light only
 //   node scripts/make-logos.mjs shadow     Nocturne of Shadow only
 //   node scripts/make-logos.mjs ice        Ice Cavern only
+//   node scripts/make-logos.mjs temple     Temple of Time only
 // Forest goes into the site (src/assets/logo, public/). Other projects go into logos/<project>/,
 // for copying into their own repos.
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -11,6 +12,7 @@ import * as forest from "./logos/forest.mjs";
 import * as light from "./logos/light.mjs";
 import * as shadow from "./logos/shadow.mjs";
 import * as ice from "./logos/ice.mjs";
+import * as temple from "./logos/temple.mjs";
 import { renderPngs, writeIco } from "./logos/engine.mjs";
 import { SITE_TITLE } from "../site.config.mjs";
 
@@ -112,6 +114,22 @@ if (want("ice")) {
   await writeFile(`${out}/site.webmanifest`, manifest("Ice Cavern", "Ice Cavern", ice.TILE[0]));
   await renderPngs([{ svg: files["medallion.svg"], size: 1024, path: `${out}/medallion-1024.png` }]);
   console.log(`ice: ${out}/`);
+}
+
+if (want("temple")) {
+  const out = "logos/temple-of-time";
+  await mkdir(out, { recursive: true });
+  const files = {
+    "logo.svg": temple.mark(),
+    "logo-dark.svg": temple.mark({ theme: "dark" }),
+    "medallion.svg": temple.medallion(),
+    "medallion-compact.svg": temple.medallion({ compact: true }),
+  };
+  for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
+  await rasters(out, { square: temple.mark({ square: true }), tile: files["logo.svg"] });
+  await writeFile(`${out}/site.webmanifest`, manifest("Temple of Time", "Temple", temple.THEMES.light.tile[0]));
+  await renderPngs([{ svg: files["medallion.svg"], size: 1024, path: `${out}/medallion-1024.png` }]);
+  console.log(`temple: ${out}/`);
 }
 
 async function renderOg(html) {

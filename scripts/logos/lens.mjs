@@ -1,7 +1,8 @@
 // Lens of Truth: the Sheikah eye, in the Lens of Truth's colours. Drawn after the Sheikah
 // symbol: three spikes above (the symbol's triangles, as the lens's red spikes), the eye with
-// curled ends and an oval pupil, and a stem down to a teardrop. The eye is the pinkish red of
-// the eye on the lens's glass, the spikes the lens's deep red, the teardrop its purple.
+// curled ends and an oval pupil, and a stem down to a teardrop. The spikes and eye are one
+// pinkish red, from the eye on the lens's glass; the teardrop is the lens's purple, or the same
+// pink (`drop: "pink"`). The eye and the pupil are filled with the lens's translucent glass.
 // Every part is a solid lit by the shared light (engine.mjs). One mark on a transparent
 // background with a dark outline, like Saria's Song's, so it reads on light and dark.
 // Coordinates are measured in a 512-unit drawing of the symbol (y down), centred on the eye.
@@ -12,12 +13,7 @@ const purple = ramp([
   [0, "#1a0630"], [0.2, "#33105c"], [0.34, "#4b1a85"], [0.48, "#6526a8"],
   [0.62, "#8240c8"], [0.76, "#a670de"], [0.9, "#d4b2f2"], [1, "#f6ecff"],
 ]);
-// The spikes' deep red.
-const spikeRed = ramp([
-  [0, "#2a0510"], [0.2, "#5a0c20"], [0.38, "#8c1632"], [0.55, "#b8233f"],
-  [0.7, "#dc3d55"], [0.85, "#f17a86"], [1, "#ffe0e4"],
-]);
-// The eye's pinkish red, from the eye on the lens's glass.
+// The pinkish red of the eye on the lens's glass: spikes and eye (and the teardrop, if pink).
 const eyeRed = ramp([
   [0, "#3a0418"], [0.2, "#6e0a2e"], [0.38, "#a8123f"], [0.55, "#d81b4f"],
   [0.7, "#ef4a72"], [0.85, "#f88aa5"], [1, "#ffe3ec"],
@@ -88,28 +84,40 @@ const SPIKES = [-90, -132, -48].map((deg) => {
   return [at(184, 0), at(120, -30), at(120, 30), at(140, 0)];
 });
 
-function draw(place, m) {
-  const sp = emblem(place, { pyramids: SPIKES, peakHeight: 0.12, ramp: spikeRed, model: m });
+// Inside of the eye, between the lids' centrelines, and the pupil's hole: filled with glass.
+const EYE_GLASS = [...smooth([[152, 230], [190, 198], [230, 183], [268, 178], [306, 183], [346, 198], [384, 230]], 8),
+  ...smooth([[384, 230], [346, 268], [306, 286], [268, 291], [230, 286], [190, 268], [152, 230]], 8)].map(([x, y]) => n([x, y, 0]));
+const PUPIL_GLASS = Array.from({ length: 32 }, (_, k) => { const t = (2 * Math.PI * k) / 32; return n([268 + 24 * Math.cos(t), 232 + 32 * Math.sin(t), 0]); });
+
+/** The lens's glass: pale lavender to violet, translucent, with a soft highlight at the top left. */
+const glassDefs = (id) =>
+  `<radialGradient id="${id}-glass" cx="0.45" cy="0.4" r="0.7"><stop offset="0" stop-color="#eef0ff" stop-opacity="0.7"/><stop offset="0.55" stop-color="#c3b2f0" stop-opacity="0.6"/><stop offset="1" stop-color="#7a5cc4" stop-opacity="0.65"/></radialGradient>` +
+  `<radialGradient id="${id}-sheen" cx="0.3" cy="0.25" r="0.45"><stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
+
+function draw(place, m, { drop: dropColour = "purple", id = "lt" } = {}) {
+  const sp = emblem(place, { pyramids: SPIKES, peakHeight: 0.12, ramp: eyeRed, model: m });
+  const glass = [EYE_GLASS, PUPIL_GLASS].map((g) => { const d = pathOf(g.map(place)); return `<path d="${d}" fill="url(#${id}-glass)"/><path d="${d}" fill="url(#${id}-sheen)"/>`; }).join("");
   const dropPath = pathOf(DROP.silhouette[0].map(place));
   const [l, r] = [place(n([238, 0, 0])), place(n([298, 0, 0]))];
-  const tones = [[0, 0.62], [0.3, 0.9], [0.55, 0.6], [1, 0.22]].map(([o, v]) => `<stop offset="${o}" stop-color="${purple.tone(v + (m.exposure ?? 0))}"/>`).join("");
+  const dropRamp = dropColour === "pink" ? eyeRed : purple;
+  const tones = [[0, 0.62], [0.3, 0.9], [0.55, 0.6], [1, 0.22]].map(([o, v]) => `<stop offset="${o}" stop-color="${dropRamp.tone(v + (m.exposure ?? 0))}"/>`).join("");
   const drop = {
-    defs: `<linearGradient id="lt-drop" gradientUnits="userSpaceOnUse" x1="${f1(l[0])}" y1="0" x2="${f1(r[0])}" y2="0">${tones}</linearGradient>`,
-    body: `<path d="${dropPath}" fill="url(#lt-drop)"/>`,
+    defs: `<linearGradient id="${id}-drop" gradientUnits="userSpaceOnUse" x1="${f1(l[0])}" y1="0" x2="${f1(r[0])}" y2="0">${tones}</linearGradient>`,
+    body: `<path d="${dropPath}" fill="url(#${id}-drop)"/>`,
     silhouette: `<path d="${dropPath}"/>`,
   };
   const lower = drawRibbon(place, LOWER, eyeRed, m), upper = drawRibbon(place, UPPER, eyeRed, m), pupil = drawRibbon(place, PUPIL, eyeRed, m);
   const silhouettes = sp.silhouettes + drop.silhouette + lower.silhouette + upper.silhouette + pupil.silhouette;
-  return { defs: drop.defs, silhouettes, body: sp.body + drop.body + lower.body + upper.body + pupil.body };
+  return { defs: drop.defs + glassDefs(id), silhouettes, body: sp.body + drop.body + glass + lower.body + upper.body + pupil.body };
 }
 
 const BOX = { x0: n([108, 0, 0])[0], x1: n([428, 0, 0])[0], y0: n([0, 66, 0])[1], y1: n([0, 471, 0])[1] };
 
 /** The eye on a transparent background with a dark outline: app icon, favicon, door. */
-export function bare({ size = 512, fill = 0.44, outline = 0.022 } = {}) {
+export function bare({ size = 512, fill = 0.44, outline = 0.022, drop = "purple", id = `lt-${drop}` } = {}) {
   const extent = Math.max(BOX.x1 - BOX.x0, BOX.y1 - BOX.y0) / 2;
   const place = placement(size, { extent, box: BOX, origin: [(BOX.x0 + BOX.x1) / 2, (BOX.y0 + BOX.y1) / 2], fill });
-  const e = draw(place, { ambient: 0.14, diffuse: 0.68, spec: 0.3 });
+  const e = draw(place, { ambient: 0.14, diffuse: 0.68, spec: 0.3 }, { drop, id });
   const ring = `<g fill="${OUTLINE}" stroke="${OUTLINE}" stroke-width="${f1(size * outline * 2)}" stroke-linejoin="round">${e.silhouettes}</g>`;
   return svgDoc({ size, defs: e.defs, body: ring + e.body, title: "Lens of Truth" });
 }

@@ -3,7 +3,7 @@
 The Sheikah eye in the Lens of Truth's colours. Source: `scripts/logos/lens.mjs`.
 
 - **Spikes.** The symbol's three triangles as spikes, in the same pink as the eye: faceted pyramids at the top and 42° either side, clear of the eye.
-- **Eye.** Upper lid running on into a curl at each end, lower lid and an oval pupil, as raised ridged strokes in the pinkish red of the eye on the lens's glass. The eye and the pupil are filled with the lens's glass, nearly opaque so it looks the same on light and dark, pale lavender with a highlight at the top left.
+- **Eye.** Upper lid running on into a curl at each end, lower lid and an oval pupil, as raised ridged strokes in the pinkish red of the eye on the lens's glass. The eye and the pupil are filled with the lens's translucent glass over a pale backing, so the outline shows through it and it looks the same on light and dark: pale lavender with a highlight at the top left.
 - **Teardrop.** A stem from the pupil down to the teardrop, shaded round, in the same pink as the rest.
 - **Outline.** A dark purple outline (`#1a0630`) around everything, so it reads on light and dark backgrounds.
 

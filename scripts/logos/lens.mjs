@@ -2,7 +2,8 @@
 // symbol: three spikes above (the symbol's triangles, as the lens's red spikes), the eye with
 // curled ends and an oval pupil, and a stem down to a teardrop. The spikes and eye are one
 // pinkish red, from the eye on the lens's glass, teardrop included. The eye and the pupil are
-// filled with the lens's glass: nearly opaque, so it looks the same on light and dark backgrounds.
+// filled with the lens's translucent glass, over a pale backing so it (and the outline seen
+// through it) looks the same on light and dark backgrounds.
 // Every part is a solid lit by the shared light (engine.mjs). One mark on a transparent
 // background with a dark outline, like Saria's Song's, so it reads on light and dark.
 // Coordinates are measured in a 512-unit drawing of the symbol (y down), centred on the eye.
@@ -85,9 +86,9 @@ const EYE_GLASS = [...smooth([[152, 230], [190, 198], [230, 183], [268, 178], [3
   ...smooth([[384, 230], [346, 268], [306, 286], [268, 291], [230, 286], [190, 268], [152, 230]], 8)].map(([x, y]) => n([x, y, 0]));
 const PUPIL_GLASS = Array.from({ length: 32 }, (_, k) => { const t = (2 * Math.PI * k) / 32; return n([268 + 24 * Math.cos(t), 232 + 32 * Math.sin(t), 0]); });
 
-/** The lens's glass: pale lavender to violet, nearly opaque, with a soft highlight at the top left. */
+/** The lens's glass: pale lavender to violet, translucent, with a soft highlight at the top left. */
 const glassDefs = (id) =>
-  `<radialGradient id="${id}-glass" cx="0.45" cy="0.4" r="0.7"><stop offset="0" stop-color="#eef0ff" stop-opacity="0.94"/><stop offset="0.55" stop-color="#c3b2f0" stop-opacity="0.9"/><stop offset="1" stop-color="#7a5cc4" stop-opacity="0.92"/></radialGradient>` +
+  `<radialGradient id="${id}-glass" cx="0.45" cy="0.4" r="0.7"><stop offset="0" stop-color="#eef0ff" stop-opacity="0.7"/><stop offset="0.55" stop-color="#c3b2f0" stop-opacity="0.6"/><stop offset="1" stop-color="#7a5cc4" stop-opacity="0.65"/></radialGradient>` +
   `<radialGradient id="${id}-sheen" cx="0.3" cy="0.25" r="0.45"><stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>`;
 
 function draw(place, m, { id = "lt" } = {}) {
@@ -103,7 +104,10 @@ function draw(place, m, { id = "lt" } = {}) {
   };
   const lower = drawRibbon(place, LOWER, eyeRed, m), upper = drawRibbon(place, UPPER, eyeRed, m), pupil = drawRibbon(place, PUPIL, eyeRed, m);
   const silhouettes = sp.silhouettes + drop.silhouette + lower.silhouette + upper.silhouette + pupil.silhouette;
-  return { defs: drop.defs + glassDefs(id), silhouettes, body: sp.body + drop.body + glass + lower.body + upper.body + pupil.body };
+  // Pale backing under the glass, drawn below the outline: the outline shows through the glass,
+  // and the background doesn't.
+  const backing = [EYE_GLASS, PUPIL_GLASS].map((g) => `<path d="${pathOf(g.map(place))}" fill="#f4f3f8"/>`).join("");
+  return { backing, defs: drop.defs + glassDefs(id), silhouettes, body: sp.body + drop.body + glass + lower.body + upper.body + pupil.body };
 }
 
 const BOX = { x0: n([108, 0, 0])[0], x1: n([428, 0, 0])[0], y0: n([0, 66, 0])[1], y1: n([0, 471, 0])[1] };
@@ -114,5 +118,5 @@ export function bare({ size = 512, fill = 0.44, outline = 0.022, id = "lt" } = {
   const place = placement(size, { extent, box: BOX, origin: [(BOX.x0 + BOX.x1) / 2, (BOX.y0 + BOX.y1) / 2], fill });
   const e = draw(place, { ambient: 0.14, diffuse: 0.68, spec: 0.3 }, { id });
   const ring = `<g fill="${OUTLINE}" stroke="${OUTLINE}" stroke-width="${f1(size * outline * 2)}" stroke-linejoin="round">${e.silhouettes}</g>`;
-  return svgDoc({ size, defs: e.defs, body: ring + e.body, title: "Lens of Truth" });
+  return svgDoc({ size, defs: e.defs, body: e.backing + ring + e.body, title: "Lens of Truth" });
 }

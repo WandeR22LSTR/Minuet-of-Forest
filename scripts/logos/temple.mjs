@@ -1,9 +1,8 @@
-// Temple of Time: the Triforce above the Door of Time, as three raised gold triangles.
+// Temple of Time: the Triforce above the Door of Time, in the temple's grey-blue stone.
 // Each piece is a low-poly solid like the other project logos: a flat top raised RISE above
 // its outline, joined to it by three bevelled faces, so the facets are shaded by the shared
-// light (engine.mjs). On the marks the Triforce is gold (Prelude of Light's) on a grey-blue
-// temple-stone tile, so the two logos read apart on the Ice Cavern doors. On the medallion it
-// is engraved into the plate's own stone.
+// light (engine.mjs). On the marks it is raised from a stone tile; on the medallion it is
+// engraved into the plate. The same stone ramp shades all of them.
 // Normalised: the whole Triforce has side 1, its centroid at 0,0, y down.
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { plateMedallion } from "./plate.mjs";
@@ -30,31 +29,26 @@ const PIECES = [
   };
 });
 
-const model = { ambient: 0.14, diffuse: 0.66, spec: 0.28 };
-export const THEMES = {
-  // Pale temple stone, deeper gold (Prelude of Light's light ramp) for contrast.
-  light: {
-    tile: ["#eef1f5", "#d8dee7"], shadow: ["#3a3220", 0.24],
-    gold: ramp([[0, "#4a3505"], [0.25, "#7f5f10"], [0.45, "#a87f1c"], [0.6, "#c0952b"], [0.75, "#e0b947"], [0.9, "#f3d36c"], [1, "#fff4c8"]]),
-  },
-  // Dark temple stone, brighter gold (Prelude of Light's dark ramp).
-  dark: {
-    tile: ["#1c2433", "#0f141e"], shadow: ["#000000", 0.5],
-    gold: ramp([[0, "#5c430c"], [0.25, "#9a7a22"], [0.45, "#c09a33"], [0.6, "#d8b34a"], [0.75, "#f6d869"], [0.9, "#fbe68a"], [1, "#fffbe6"]]),
-  },
-};
-// Grey-blue stone of the Temple of Time, for the plate.
+// Grey-blue stone of the Temple of Time: the plate, and the Triforce everywhere.
 const stone = ramp([[0, "#161b24"], [0.2, "#2a3240"], [0.34, "#3d4757"], [0.48, "#566273"], [0.62, "#75818f"], [0.76, "#9ba5b1"], [0.9, "#c9d0d8"], [1, "#f1f4f7"]]);
 
+const model = { ambient: 0.14, diffuse: 0.66, spec: 0.28 };
+export const THEMES = {
+  // Pale stone tile; the Triforce darkened so it stands off it.
+  light: { tile: ["#eef1f5", "#d8dee7"], shadow: ["#161b24", 0.26], exposure: -0.14 },
+  // Dark stone tile; the Triforce brightened.
+  dark: { tile: ["#1c2433", "#0f141e"], shadow: ["#000000", 0.5], exposure: 0.08 },
+};
+
 /** Shaded pieces. `engraved` cuts them into the surface, `depth` times as deep as they are raised. */
-function draw(place, gold, m, { engraved = false, depth = 1 } = {}) {
+function draw(place, tones, m, { engraved = false, depth = 1 } = {}) {
   let silhouettes = "", body = "";
   for (const { facets, outline } of PIECES) {
     for (let f of facets) {
       if (engraved) f = f.map(([x, y, z]) => [x, y, -z * depth]);
       let n = cross(sub(f[1], f[0]), sub(f[2], f[0]));
       if (n[2] < 0) n = n.map((v) => -v);
-      const c = gold.shade(norm(n), m);
+      const c = tones.shade(norm(n), m);
       body += `<path d="${pathOf(f.map(place))}" fill="${c}" stroke="${c}" stroke-width="0.5" stroke-linejoin="round"/>`;
     }
     silhouettes += `<path d="${pathOf(outline.map(place))}"/>`;
@@ -67,7 +61,7 @@ const BOX = { x0: -0.5, x1: 0.5, y0: APEX[1], y1: LEFT[1] };
 export function mark({ theme = "light", size = 512, fill = 0.4, square = false, id = `tt-${theme}` } = {}) {
   const t = THEMES[theme];
   const place = placement(size, { extent: 0.5, box: BOX, fill });
-  const e = draw(place, t.gold, { ...model, exposure: theme === "dark" ? 0.04 : -0.02 });
+  const e = draw(place, stone, { ...model, exposure: t.exposure });
   const shadow = `<g transform="translate(${f1(size * SHADOW_OFFSET.dx)} ${f1(size * SHADOW_OFFSET.dy)})" fill="${t.shadow[0]}" fill-opacity="${t.shadow[1]}" filter="url(#${id}-soft)">${e.silhouettes}</g>`;
   return svgDoc({ size, defs: tileDefs(id, t.tile) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Triforce mark" });
 }

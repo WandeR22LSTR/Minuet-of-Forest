@@ -127,7 +127,11 @@ if (want("temple")) {
   for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
   await rasters(out, { square: temple.mark({ square: true }), tile: files["logo.svg"] });
   await writeFile(`${out}/site.webmanifest`, manifest("Temple of Time", "Temple", temple.THEMES.light.tile[0]));
-  await renderPngs([{ svg: files["medallion.svg"], size: 1024, path: `${out}/medallion-1024.png` }]);
+  await renderPngs([
+    { svg: files["medallion.svg"], size: 1024, path: `${out}/medallion-1024.png` },
+    // Discord crops avatars to a circle: square dark tile, emblem small enough to clear the crop.
+    { svg: temple.mark({ theme: "dark", square: true, fill: 0.31 }), size: 1024, path: `${out}/discord-avatar-1024.png` },
+  ]);
   console.log(`temple: ${out}/`);
 }
 

@@ -6,7 +6,7 @@
 //   curl:  from the bottom-left tail, up the right side and over into the inner hook
 // Each stroke is a centreline [x, y, width] in a 1024-unit square (y down), smoothed with the
 // forest blade's spline. A ridge runs down its middle, raised in proportion to the width.
-import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
+import { norm, cross, sub, ramp, svgDoc, f1, pathOf, placement } from "./engine.mjs";
 import { smooth } from "./forest.mjs";
 
 // Centrelines and widths measured across the glyph's strokes, then drawn through by hand.
@@ -29,10 +29,6 @@ export const RAMP = ramp([
 ]);
 // Outline for the bare (tray) mark, so it reads on light and dark taskbars.
 export const OUTLINE = "#124a22";
-export const THEMES = {
-  light: { tile: ["#f3f8f1", "#dcebd9"], shadow: ["#124a22", 0.24], exposure: -0.12 },
-  dark: { tile: ["#14261a", "#0a160e"], shadow: ["#000000", 0.5], exposure: 0.06 },
-};
 
 /** One stroke: centreline, left and right edges (raised ridge in the middle), and outline. */
 function stroke(ctrl) {
@@ -95,22 +91,10 @@ function box() {
 
 const model = { ambient: 0.16, diffuse: 0.66, spec: 0.28 };
 
-/** The spiral on the shared tile (light or dark). */
-export function mark({ theme = "light", size = 512, fill = 0.4, square = false, id = `ss-${theme}` } = {}) {
-  const t = THEMES[theme], b = box();
-  const extent = Math.max(b.x1 - b.x0, b.y1 - b.y0) / 2;
-  const place = placement(size, { extent, box: b, origin: [(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2], fill });
-  const e = draw(place, { ...model, exposure: t.exposure });
-  const shadow = `<g transform="translate(${f1(size * SHADOW_OFFSET.dx)} ${f1(size * SHADOW_OFFSET.dy)})" fill="${t.shadow[0]}" fill-opacity="${t.shadow[1]}" filter="url(#${id}-soft)">${e.silhouettes}</g>`;
-  // A thin dark edge under the strokes, so the lit faces don't wash into the tile (drawn
-  // underneath, so the sweep's hidden end stays hidden under the curl).
-  const edge = `<g fill="none" stroke="${OUTLINE}" stroke-opacity="0.55" stroke-width="${f1(size * 0.01)}" stroke-linejoin="round">${e.silhouettes}</g>`;
-  return svgDoc({ size, defs: tileDefs(id, t.tile) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + edge + e.body, title: "Kokiri spiral mark" });
-}
-
 /**
  * The spiral alone on a transparent background, with a dark green outline so it reads on light
- * and dark taskbars: the tray, app and installer icon. `outline` is its width, of the size.
+ * and dark taskbars: the tray, app and installer icon, and the Ice Cavern door. There is no
+ * tile version. `outline` is its width, of the size.
  */
 export function bare({ size = 512, fill = 0.44, outline = 0.025 } = {}) {
   const b = box();

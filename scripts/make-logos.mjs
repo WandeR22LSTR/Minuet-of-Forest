@@ -141,18 +141,13 @@ if (want("saria")) {
   // Saria's Song lives in a private repo: these files are git-ignored here and handed over as a zip.
   const out = "logos/sarias-song";
   await mkdir(`${out}/png`, { recursive: true });
-  const files = {
-    "logo.svg": saria.mark(),
-    "logo-dark.svg": saria.mark({ theme: "dark" }),
-    "spiral.svg": saria.bare(),
-  };
+  const files = { "spiral.svg": saria.bare() };
   for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
   // App, tray and installer icon: the bare spiral with its outline, at the Windows icon sizes.
   const sizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
   await renderPngs(sizes.map((size) => ({ svg: files["spiral.svg"], size, path: `${out}/png/spiral-${size}.png` })));
   await writeIco(`${out}/saria-song.ico`, await Promise.all([16, 24, 32, 48, 64, 128, 256].map(async (size) => ({ size, png: await readFile(`${out}/png/spiral-${size}.png` ) }))));
   await writeFile(`${out}/saria-song.png`, await readFile(`${out}/png/spiral-256.png`));
-  await renderPngs([{ svg: saria.mark({ square: true }), size: 512, path: `${out}/png/logo-512.png` }]);
   console.log(`saria: ${out}/`);
 }
 

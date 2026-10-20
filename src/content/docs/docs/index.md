@@ -5,6 +5,6 @@ description: "[description of the docs]"
 
 [introduction to the docs]
 
-## Temple of Time
+## Projects
 
-[about the Temple of Time write-up]
+[short guide to the project sections]

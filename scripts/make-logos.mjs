@@ -158,9 +158,6 @@ if (want("lens")) {
   await mkdir(`${out}/png`, { recursive: true });
   const svg = lens.bare();
   await writeFile(`${out}/lens.svg`, svg);
-  // Variant for comparison: the teardrop in the same pink, no purple.
-  await writeFile(`${out}/lens-pink.svg`, lens.bare({ drop: "pink" }));
-  await renderPngs([{ svg: lens.bare({ drop: "pink" }), size: 1024, path: `${out}/lens-pink-1024.png` }]);
   // App icon, favicon and door: the outlined lens, at the usual icon sizes.
   const sizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
   await renderPngs(sizes.map((size) => ({ svg, size, path: `${out}/png/lens-${size}.png` })));

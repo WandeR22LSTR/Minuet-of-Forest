@@ -7,7 +7,7 @@
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { plateMedallion } from "./plate.mjs";
 
-const GAP = 0.035; // each piece shrunk towards its own centre, opening a gap between pieces
+const GAP = 0; // pieces shrunk towards their own centres by this much; 0: they meet at the corners
 const TOP = 0.8; // flat top, as a fraction of the piece: narrow bevels close to the edges
 const RISE = 0.06;
 

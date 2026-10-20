@@ -9,15 +9,19 @@
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { smooth } from "./forest.mjs";
 
+// Centrelines and widths measured across the glyph's strokes, then drawn through by hand.
 const STROKES = [
   // sweep (drawn first: its blunt end is hidden under the curl)
-  [[437, 102, 0], [330, 170, 30], [245, 285, 58], [215, 420, 75], [250, 560, 85], [350, 655, 90], [500, 695, 90], [650, 665, 80], [790, 610, 70]],
+  [[437, 102, 0], [343, 160, 24], [301, 200, 33], [248, 280, 48], [223, 360, 62], [220, 440, 78], [240, 540, 92], [290, 615, 100],
+    [380, 660, 105], [440, 684, 105], [500, 693, 93], [560, 690, 87], [620, 678, 85], [680, 661, 86], [740, 638, 87], [790, 615, 85]],
   // curl
-  [[243, 842, 0], [370, 900, 28], [500, 880, 42], [650, 810, 55], [760, 700, 62], [805, 590, 70], [805, 480, 70], [785, 390, 64], [735, 320, 55], [650, 288, 45], [578, 318, 36], [535, 390, 28], [550, 455, 20], [595, 492, 0]],
+  [[245, 843, 0], [320, 885, 15], [380, 901, 23], [440, 905, 30], [500, 899, 38], [560, 883, 48], [643, 840, 55], [693, 800, 58],
+    [730, 760, 60], [758, 720, 62], [790, 650, 66], [808, 560, 69], [808, 480, 66], [800, 440, 67], [785, 400, 66], [761, 360, 63],
+    [721, 320, 58], [680, 296, 55], [620, 291, 47], [565, 320, 42], [535, 360, 40], [529, 400, 38], [537, 440, 33], [560, 472, 22], [595, 492, 0]],
 ];
-const WIDTH = 1.25; // widths scaled to the reference's weight
+const WIDTH = 1.35; // bolder than the glyph, for a heavier icon
 const RIDGE = 0.35; // ridge height, as a fraction of the half-width
-const PER = 5; // samples per control segment: few, broad facets, low-poly like the other logos
+const PER = 3; // samples per control segment: few, broad facets, low-poly like the other logos
 
 export const RAMP = ramp([
   [0, "#0b2a14"], [0.2, "#124a22"], [0.34, "#1b6430"], [0.48, "#2a8240"],

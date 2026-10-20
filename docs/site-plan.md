@@ -1,6 +1,6 @@
 # Site plan (Phase 1 proposal)
 
-Status: **proposal, awaiting Luca's approval.** Nothing below is built yet. Built from Luca's answers on 2026-10-20.
+Status: **site map approved 2026-10-20.** Open: the project registry (see Content model).
 
 ## Readers
 1. Research advisor; graduate school and internship reviewers, reached through the link on the resume. The home page and resume serve them first.
@@ -13,19 +13,19 @@ Ocarina of Time names appear in the project sections. The professional pages (ho
 |---|---|---|
 | `/` | Home | Short intro, entry points to Research, Projects and Resume |
 | `/research/` | GRB summer fellowship | One long page: the whole fellowship. LaTeX maths, figures, data, notebooks, code |
-| `/research/capstone/` | Capstone | Continues the GRB work. Starts as an overview with room for its layers (code automation, agent-based repository work, physical relations), each becoming its own page when there is work to show |
+| `/research/capstone/` | Capstone | Continues the GRB work. An overview, a **dated progress log** (short entries, newest first) and **milestone pages** for its layers (code automation, agent-based repository work, physical relations) as each reaches a milestone |
 | `/projects/` | Project index | Every personal project: name, one line, status, current version, timeline. Each links to its docs |
 | `/docs/<project>/` | Project documentation | The main content of each project. One section per project (below) |
 | `/docs/<project>/changelog/` | Changelog | Per project, from its changelog file |
 | `/resume/` + `/resume.pdf` | Resume | Unchanged |
 | `/contact/` | Contact | Stays |
+| `/currently/` | Currently | A media-flavoured "now" page: what Luca is reading, watching, playing and listening to, with a "last updated" date. Name of the route open |
 | `/garden/` | Digital garden | Published slice of the Obsidian vault. **Stretch goal for 1.0**, scoped separately |
 
 Removed:
 - `/cv/` and `cv.pdf`: CVs are tailored per application.
 - `/about/`: the Minuet of Forest docs section covers it.
 
-Open: `/now/`. A "now page" is a short, dated "what I'm focused on these days" page (reading, studying, building); see nownownow.com. It's optional: keep it, or drop it.
 
 ## Projects documented here
 Every personal project except Nocturne of Shadow, whose docs stay on Nocturne itself: they would include sensitive material, and this repo is public.

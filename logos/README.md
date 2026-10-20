@@ -10,6 +10,7 @@ the project that uses them. Regenerate with `node scripts/make-logos.mjs <projec
 | `nocturne-of-shadow/` | Nocturne of Shadow | `scripts/logos/shadow.mjs` |
 | `ice-cavern/` | Ice Cavern | `scripts/logos/ice.mjs` |
 | `temple-of-time/` | Temple of Time | `scripts/logos/temple.mjs` |
+| `lens-of-truth/` | Lens of Truth | `scripts/logos/lens.mjs` |
 | `sarias-song/` (git-ignored) | Saria's Song | `scripts/logos/saria.mjs` |
 
 Saria's Song lives in a private repo, so its generated files are not committed here: run `node scripts/make-logos.mjs saria` and hand the folder over.

@@ -5,6 +5,7 @@
 //   node scripts/make-logos.mjs shadow     Nocturne of Shadow only
 //   node scripts/make-logos.mjs ice        Ice Cavern only
 //   node scripts/make-logos.mjs temple     Temple of Time only
+//   node scripts/make-logos.mjs lens       Lens of Truth only
 //   node scripts/make-logos.mjs saria      Saria's Song only (output is git-ignored: it goes to a private repo)
 // Forest goes into the site (src/assets/logo, public/). Other projects go into logos/<project>/,
 // for copying into their own repos.
@@ -15,6 +16,7 @@ import * as shadow from "./logos/shadow.mjs";
 import * as ice from "./logos/ice.mjs";
 import * as temple from "./logos/temple.mjs";
 import * as saria from "./logos/saria.mjs";
+import * as lens from "./logos/lens.mjs";
 import { renderPngs, writeIco } from "./logos/engine.mjs";
 import { SITE_TITLE } from "../site.config.mjs";
 
@@ -149,6 +151,18 @@ if (want("saria")) {
   await writeIco(`${out}/saria-song.ico`, await Promise.all([16, 24, 32, 48, 64, 128, 256].map(async (size) => ({ size, png: await readFile(`${out}/png/spiral-${size}.png` ) }))));
   await writeFile(`${out}/saria-song.png`, await readFile(`${out}/png/spiral-256.png`));
   console.log(`saria: ${out}/`);
+}
+
+if (want("lens")) {
+  const out = "logos/lens-of-truth";
+  await mkdir(`${out}/png`, { recursive: true });
+  const svg = lens.bare();
+  await writeFile(`${out}/lens.svg`, svg);
+  // App icon, favicon and door: the outlined lens, at the usual icon sizes.
+  const sizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
+  await renderPngs(sizes.map((size) => ({ svg, size, path: `${out}/png/lens-${size}.png` })));
+  await writeIco(`${out}/lens-of-truth.ico`, await Promise.all([16, 24, 32, 48, 64, 128, 256].map(async (size) => ({ size, png: await readFile(`${out}/png/lens-${size}.png`) }))));
+  console.log(`lens: ${out}/`);
 }
 
 async function renderOg(html) {

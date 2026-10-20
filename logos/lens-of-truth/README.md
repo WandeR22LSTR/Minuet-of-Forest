@@ -12,5 +12,6 @@ The Sheikah eye in the Lens of Truth's colours. Source: `scripts/logos/lens.mjs`
 | `lens.svg` | Vector source: favicon, header, Ice Cavern door |
 | `lens-of-truth.ico` | Windows icon, 16–256 px |
 | `png/lens-<size>.png` | 16–1024 px, transparent background |
+| `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest` | Web set: bookmarks and home screen (touch icon on a pale square) |
 
 Colours: spikes, eye and teardrop `#6e0a2e` → `#d81b4f` → `#ffe3ec`; glass `#eef0ff` → `#c3b2f0` → `#7a5cc4`, translucent.

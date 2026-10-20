@@ -21,6 +21,7 @@ Saria's Song lives in a private repo, so its generated files are not committed h
 - `prelude-of-light-part2.zip`: full medallion, versioned footer, large renders to keep
 - `nocturne-of-shadow.zip`: logo, icons, link back to Minuet, versioned footer, palette proposal
 - `ice-cavern.zip`: logo (light and dark), icons, ice palette as the hub's look, project logos for the doors (Saria's Song's comes separately, as it is private), versioned footer, Blue Fire note. Meant to go with the hub's own handoff, which is private and not stored here
+- `logo-engine-handoff-2-2026-10-20.zip`: Lens of Truth (logo, icons, directions for wherever it fits) and its Ice Cavern door logo
 - `temple-of-time.zip`: Triforce logo (light and dark), icons, Discord bot avatar, large medallion for the documentation
 
 Rebuild a zip after regenerating a project's logos, so it carries the new files.

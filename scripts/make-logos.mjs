@@ -159,8 +159,13 @@ if (want("lens")) {
   const svg = lens.bare();
   await writeFile(`${out}/lens.svg`, svg);
   // App icon, favicon and door: the outlined lens, at the usual icon sizes.
-  const sizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
+  const sizes = [16, 24, 32, 48, 64, 128, 180, 192, 256, 512, 1024];
   await renderPngs(sizes.map((size) => ({ svg, size, path: `${out}/png/lens-${size}.png` })));
+  // Web set, if the project has a web interface: touch icon on a pale square (iOS fills
+  // transparency with black), home-screen icons and a manifest.
+  await renderPngs([{ svg, size: 180, path: `${out}/apple-touch-icon.png`, background: "#f4f3f8" }]);
+  for (const size of [192, 512]) await writeFile(`${out}/icon-${size}.png`, await readFile(`${out}/png/lens-${size}.png`));
+  await writeFile(`${out}/site.webmanifest`, manifest("Lens of Truth", "Lens", "#f4f3f8"));
   await writeIco(`${out}/lens-of-truth.ico`, await Promise.all([16, 24, 32, 48, 64, 128, 256].map(async (size) => ({ size, png: await readFile(`${out}/png/lens-${size}.png`) }))));
   console.log(`lens: ${out}/`);
 }

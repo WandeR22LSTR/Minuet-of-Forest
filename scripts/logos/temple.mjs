@@ -3,7 +3,7 @@
 // its outline, joined to it by three bevelled faces, so the facets are shaded by the shared
 // light (engine.mjs). On the marks the Triforce is gold (Prelude of Light's) on a grey-blue
 // temple-stone tile, so the two logos read apart on the Ice Cavern doors. On the medallion it
-// is carved from the plate's own stone, like the other medallions' emblems.
+// is engraved into the plate's own stone.
 // Normalised: the whole Triforce has side 1, its centroid at 0,0, y down.
 import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDefs, SHADOW_OFFSET, placement } from "./engine.mjs";
 import { plateMedallion } from "./plate.mjs";
@@ -46,10 +46,12 @@ export const THEMES = {
 // Grey-blue stone of the Temple of Time, for the plate.
 const stone = ramp([[0, "#161b24"], [0.2, "#2a3240"], [0.34, "#3d4757"], [0.48, "#566273"], [0.62, "#75818f"], [0.76, "#9ba5b1"], [0.9, "#c9d0d8"], [1, "#f1f4f7"]]);
 
-function draw(place, gold, m) {
+/** Shaded pieces. `engraved` cuts them into the surface instead of raising them. */
+function draw(place, gold, m, { engraved = false } = {}) {
   let silhouettes = "", body = "";
   for (const { facets, outline } of PIECES) {
-    for (const f of facets) {
+    for (let f of facets) {
+      if (engraved) f = f.map(([x, y, z]) => [x, y, -z]);
       let n = cross(sub(f[1], f[0]), sub(f[2], f[0]));
       if (n[2] < 0) n = n.map((v) => -v);
       const c = gold.shade(norm(n), m);
@@ -57,7 +59,7 @@ function draw(place, gold, m) {
     }
     silhouettes += `<path d="${pathOf(outline.map(place))}"/>`;
   }
-  return { silhouettes, body };
+  return { silhouettes, body, outlines: PIECES.map((pc) => pc.outline.map(place)) };
 }
 
 const BOX = { x0: -0.5, x1: 0.5, y0: APEX[1], y1: LEFT[1] };
@@ -80,11 +82,18 @@ export function medallion({ size = 512, id = "ttm" } = {}) {
     size, id, ramp: stone, title: "Triforce on the temple plate",
     content: (place, cast) => {
       const p = ([x, y]) => place([x * PLATE_SCALE, (y + LIFT) * PLATE_SCALE]);
-      const e = draw(p, stone, { ambient: 0.1, diffuse: 0.74, spec: 0.3, exposure: 0.02 });
-      const back = `<g transform="translate(${f1(cast.dx * 0.55)} ${f1(cast.dy * 0.55)})" fill="${stone.deepest}" fill-opacity="0.5">${e.silhouettes}</g>`;
-      // A thin dark edge, as on the forest medallion, keeps the pieces apart from the face.
-      const edge = `<g fill="none" stroke="${stone.deepest}" stroke-opacity="0.35" stroke-width="${f1(cast.R * 0.006)}" stroke-linejoin="round">${e.silhouettes}</g>`;
-      return { back, front: e.body + edge };
+      // Engraved into the face: the pieces are cut in, so the walls facing the light go dark
+      // and the top-left walls cast a shadow onto each cut's floor. Nothing is cast outside.
+      const e = draw(p, stone, { ambient: 0.1, diffuse: 0.74, spec: 0.3, exposure: -0.02 }, { engraved: true });
+      const off = [cast.dx * 0.35, cast.dy * 0.35];
+      let defs = "", inner = "";
+      e.outlines.forEach((o, i) => {
+        defs += `<clipPath id="${id}-cut${i}"><path d="${pathOf(o)}"/></clipPath>`;
+        inner += `<path clip-path="url(#${id}-cut${i})" fill-rule="evenodd" fill="${stone.deepest}" fill-opacity="0.45" d="${pathOf(o)}${pathOf(o.map(([x, y]) => [x + off[0], y + off[1]]))}"/>`;
+      });
+      // A thin dark line where the cut meets the face.
+      const edge = `<g fill="none" stroke="${stone.deepest}" stroke-opacity="0.4" stroke-width="${f1(cast.R * 0.005)}" stroke-linejoin="round">${e.silhouettes}</g>`;
+      return { back: "", front: e.body + inner + edge, defs };
     },
   });
 }

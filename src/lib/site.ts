@@ -39,16 +39,21 @@ export async function publishedPages() {
   return getCollection("pages", ({ data }) => SHOW_DRAFTS || !data.draft);
 }
 
+/** Whether the research page (in the docs collection) is published. */
+export async function researchPublished() {
+  return (await getCollection("docs", ({ id, data }) => id === "research" && (SHOW_DRAFTS || !data.draft))).length > 0;
+}
+
 /** Main navigation. Pages backed by a draft entry disappear in production. */
 export async function navItems() {
   const live = new Set((await publishedPages()).map((p) => p.id));
+  if (await researchPublished()) live.add("research");
   const items = [
-    { href: "/about/", label: "About", entry: "about" },
     { href: "/research/", label: "Research", entry: "research" },
     { href: "/projects/", label: "Projects" },
     { href: "/docs/", label: "Docs" },
     { href: "/resume/", label: "Resume" },
-    { href: "/now/", label: "Now", entry: "now" },
+    { href: "/currently/", label: "Currently", entry: "currently" },
     { href: "/contact/", label: "Contact" },
   ];
   return items.filter((i) => !i.entry || live.has(i.entry));

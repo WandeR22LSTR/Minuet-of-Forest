@@ -47,7 +47,7 @@ for (const f of html) {
   }
 }
 
-for (const f of ["dist/resume/index.html", "dist/cv/index.html"]) {
+for (const f of ["dist/resume/index.html"]) {
   if ((await readFile(f, "utf8")).includes('class="medallion')) errors.push(`${f}: medallion must not appear here`);
 }
 const sitemap = files.filter((f) => /sitemap.*\.xml$/.test(f));
@@ -56,7 +56,7 @@ for (const f of sitemap) {
   if (/404/.test(s)) errors.push(`${f}: lists 404`);
   if (NOCTURNE_URL && s.includes(NOCTURNE_URL)) errors.push(`${f}: lists Nocturne`);
 }
-for (const pdf of ["dist/resume.pdf", "dist/cv.pdf"]) {
+for (const pdf of ["dist/resume.pdf"]) {
   if (!(await exists(pdf))) { errors.push(`missing ${pdf}`); continue; }
   const b = (await readFile(pdf)).toString("latin1");
   if (!b.includes(siteRoot)) errors.push(`${pdf}: no link back to the site`);

@@ -9,7 +9,7 @@ home:
   research_pending: "[note shown until the research page is published]"
   projects: "[one line about projects]"
   resume: "[one line about the resume]"
-  now_more: "[link to the now page]"
+  now_more: "[link to the Currently page]"
 projects:
   description: "[description of the projects page]"
 contact:
@@ -17,9 +17,8 @@ contact:
 resume:
   description: "[description of the resume page]"
   empty: "[note shown while the resume is being written]"
-cv:
-  description: "[description of the CV page]"
-  empty: "[note shown while the CV is being written]"
+capstone_log:
+  description: "[description of the capstone progress log]"
 not_found:
   title: "[404 title]"
   text: "[404 message]"

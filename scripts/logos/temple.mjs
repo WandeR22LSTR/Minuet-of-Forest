@@ -8,7 +8,7 @@ import { norm, cross, sub, ramp, svgDoc, f1, pathOf, tileDefs, tileRect, softDef
 import { plateMedallion } from "./plate.mjs";
 
 const GAP = 0.035; // each piece shrunk towards its own centre, opening a gap between pieces
-const TOP = 0.5; // flat top, as a fraction of the piece
+const TOP = 0.8; // flat top, as a fraction of the piece: narrow bevels close to the edges
 const RISE = 0.06;
 
 const H = Math.sqrt(3) / 2;
@@ -69,10 +69,10 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
   return svgDoc({ size, defs: tileDefs(id, t.tile) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Triforce mark" });
 }
 
-// On the plate the Triforce is centred optically like the marks (three quarters of the way from
-// its centroid to its box centre), with the base corners at 0.62 of the plate radius.
-const LIFT = (0.75 * H) / 6;
-const PLATE_SCALE = 0.62 / Math.hypot(0.5, H / 3 + LIFT);
+// On the plate the Triforce sits halfway between centroid-centred (largest, but looks low) and
+// box-centred, and the base corners reach 0.655 of the plate radius, the edge of the recessed face.
+const LIFT = H / 12;
+const PLATE_SCALE = 0.655 / Math.hypot(0.5, H / 3 + LIFT);
 export function medallion({ size = 512, compact = false, id = "ttm" } = {}) {
   const gold = THEMES.light.gold;
   return plateMedallion({

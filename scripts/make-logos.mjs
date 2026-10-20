@@ -5,6 +5,7 @@
 //   node scripts/make-logos.mjs shadow     Nocturne of Shadow only
 //   node scripts/make-logos.mjs ice        Ice Cavern only
 //   node scripts/make-logos.mjs temple     Temple of Time only
+//   node scripts/make-logos.mjs saria      Saria's Song only (output is git-ignored: it goes to a private repo)
 // Forest goes into the site (src/assets/logo, public/). Other projects go into logos/<project>/,
 // for copying into their own repos.
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -13,6 +14,7 @@ import * as light from "./logos/light.mjs";
 import * as shadow from "./logos/shadow.mjs";
 import * as ice from "./logos/ice.mjs";
 import * as temple from "./logos/temple.mjs";
+import * as saria from "./logos/saria.mjs";
 import { renderPngs, writeIco } from "./logos/engine.mjs";
 import { SITE_TITLE } from "../site.config.mjs";
 
@@ -133,6 +135,25 @@ if (want("temple")) {
     { svg: temple.mark({ theme: "dark", square: true, fill: 0.31 }), size: 1024, path: `${out}/discord-avatar-1024.png` },
   ]);
   console.log(`temple: ${out}/`);
+}
+
+if (want("saria")) {
+  // Saria's Song lives in a private repo: these files are git-ignored here and handed over as a zip.
+  const out = "logos/sarias-song";
+  await mkdir(`${out}/png`, { recursive: true });
+  const files = {
+    "logo.svg": saria.mark(),
+    "logo-dark.svg": saria.mark({ theme: "dark" }),
+    "spiral.svg": saria.bare(),
+  };
+  for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
+  // App, tray and installer icon: the bare spiral with its outline, at the Windows icon sizes.
+  const sizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
+  await renderPngs(sizes.map((size) => ({ svg: files["spiral.svg"], size, path: `${out}/png/spiral-${size}.png` })));
+  await writeIco(`${out}/saria-song.ico`, await Promise.all([16, 24, 32, 48, 64, 128, 256].map(async (size) => ({ size, png: await readFile(`${out}/png/spiral-${size}.png` ) }))));
+  await writeFile(`${out}/saria-song.png`, await readFile(`${out}/png/spiral-256.png`));
+  await renderPngs([{ svg: saria.mark({ square: true }), size: 512, path: `${out}/png/logo-512.png` }]);
+  console.log(`saria: ${out}/`);
 }
 
 async function renderOg(html) {

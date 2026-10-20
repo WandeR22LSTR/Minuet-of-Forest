@@ -24,7 +24,7 @@ const { shade, deepest } = ramp([
 ]);
 
 // Centripetal Catmull-Rom through the points (ends extended by reflection), then arc-length resampled.
-function smooth(pts, per = 16) {
+export function smooth(pts, per = 16) {
   const reflect = (a, b) => [2 * a[0] - b[0], 2 * a[1] - b[1]];
   const P = [reflect(pts[0], pts[1]), ...pts, reflect(pts.at(-1), pts.at(-2))];
   const out = [];
@@ -42,7 +42,7 @@ function smooth(pts, per = 16) {
   out.push(pts.at(-1));
   return out;
 }
-function resample(line, n) {
+export function resample(line, n) {
   const acc = [0];
   for (let i = 1; i < line.length; i++) acc.push(acc[i - 1] + Math.hypot(line[i][0] - line[i - 1][0], line[i][1] - line[i - 1][1]));
   const out = [];

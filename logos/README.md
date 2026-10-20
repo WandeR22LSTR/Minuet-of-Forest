@@ -10,6 +10,9 @@ the project that uses them. Regenerate with `node scripts/make-logos.mjs <projec
 | `nocturne-of-shadow/` | Nocturne of Shadow | `scripts/logos/shadow.mjs` |
 | `ice-cavern/` | Ice Cavern | `scripts/logos/ice.mjs` |
 | `temple-of-time/` | Temple of Time | `scripts/logos/temple.mjs` |
+| `sarias-song/` (git-ignored) | Saria's Song | `scripts/logos/saria.mjs` |
+
+Saria's Song lives in a private repo, so its generated files are not committed here: run `node scripts/make-logos.mjs saria` and hand the folder over.
 
 ## Handoffs
 `handoffs/` holds ready-to-use zips for each project's own Claude Code session, with directions (`HANDOFF.md` inside; the `.md` beside each zip is a copy for reading here):

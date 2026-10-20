@@ -3,7 +3,7 @@
 The version is in `package.json` and shows in the site footer next to the medallion.
 Bump it with every release and add an entry here.
 
-## Unreleased
+## 0.7.0 (2026-10-20)
 - Phase 1 structure (see `docs/site-plan.md`): CV and About pages removed; Now page replaced by Currently (media);
   research and capstone moved into the docs layout with LaTeX maths (KaTeX, self-hosted); capstone progress log
   (`src/content/capstone-log/`); a docs section per project (overview, changelog). Project sidebar groups appear

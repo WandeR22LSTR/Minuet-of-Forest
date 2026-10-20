@@ -4,7 +4,7 @@ The Triforce above the Door of Time, as three raised gold triangles. Source: `sc
 
 - **Emblem.** The Triforce, side 1, split into three pieces that meet at their corners. Each piece is a low-poly solid: a flat top raised above its outline and joined to it by three narrow bevelled faces close to its edges, lit from the top left like the other project logos.
 - **Mark.** The Triforce alone on a pale temple-stone tile. The gold is Prelude of Light's; the grey-blue stone keeps the two apart on the Ice Cavern doors.
-- **Medallion.** The shared twelve-sided plate in grey-blue stone, with the gold Triforce filling the recessed face and reaching over the bevel. Large display only; there is no compact medallion.
+- **Medallion.** The shared twelve-sided plate in grey-blue stone, with the gold Triforce filling the recessed face, its corners in three of the face's corners. Large display only; there is no compact medallion.
 
 | File | Use |
 |---|---|

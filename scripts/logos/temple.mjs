@@ -69,11 +69,11 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
   return svgDoc({ size, defs: tileDefs(id, t.tile) + softDefs(id, size), body: tileRect(id, size, { square }) + shadow + e.body, title: "Triforce mark" });
 }
 
-// On the plate the Triforce sits halfway between centroid-centred (largest, but looks low) and
-// box-centred, and the base corners reach 0.74 of the plate radius: past the recessed face, over
-// the bevel, just short of the rune band.
-const LIFT = H / 12;
-const PLATE_SCALE = 0.74 / Math.hypot(0.5, H / 3 + LIFT);
+// On the plate the Triforce is centred on its centroid, so its three corners point at three of
+// the twelve-gon's vertices (top, lower left, lower right) and can sit right in them: 0.665 of
+// the plate radius, just inside the recessed face (0.68). Largest size that stays off the bevel.
+const LIFT = 0;
+const PLATE_SCALE = 0.665 / (1 / Math.sqrt(3));
 export function medallion({ size = 512, id = "ttm" } = {}) {
   const gold = THEMES.light.gold;
   return plateMedallion({

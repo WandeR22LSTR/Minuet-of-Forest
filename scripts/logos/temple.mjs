@@ -74,8 +74,8 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
 
 // On the plate the Triforce is centred on its centroid, so its three corners point at three of
 // the twelve-gon's vertices (top, lower left, lower right), at 0.58 of the plate radius: a clear
-// margin inside the recessed face (0.68).
-const LIFT = 0;
+// margin inside the recessed face (0.68). Then moved slightly down (LIFT, in Triforce units).
+const LIFT = 0.035;
 const PLATE_SCALE = 0.58 / (1 / Math.sqrt(3));
 export function medallion({ size = 512, id = "ttm" } = {}) {
   return plateMedallion({

@@ -21,7 +21,7 @@ const STROKES = [
 ];
 const WIDTH = 1.35; // bolder than the glyph, for a heavier icon
 const RIDGE = 0.35; // ridge height, as a fraction of the half-width
-const PER = 3; // samples per control segment: few, broad facets, low-poly like the other logos
+const PER = 24; // samples per control segment: fine enough that the shading reads as smooth
 
 export const RAMP = ramp([
   [0, "#0b2a14"], [0.2, "#124a22"], [0.34, "#1b6430"], [0.48, "#2a8240"],
@@ -37,10 +37,18 @@ export const THEMES = {
 /** One stroke: centreline, left and right edges (raised ridge in the middle), and outline. */
 function stroke(ctrl) {
   const c = smooth(ctrl.map(([x, y]) => [x, y]), PER);
-  const w = c.map((_, i) => {
+  // Width: linear between the measured points, then averaged over one segment either side so it
+  // swells and tapers without bumps at the points. Near the tips the narrower of the two is
+  // used, so the tips stay sharp.
+  const raw = c.map((_, i) => {
     const k = Math.min(ctrl.length - 1, i / PER), j = Math.min(ctrl.length - 2, Math.floor(k)), t = k - j;
-    const s = t * t * (3 - 2 * t);
-    return ctrl[j][2] + (ctrl[j + 1][2] - ctrl[j][2]) * s;
+    return ctrl[j][2] + (ctrl[j + 1][2] - ctrl[j][2]) * t;
+  });
+  const w = raw.map((v, i) => {
+    let sum = 0, n = 0;
+    for (let d = -PER; d <= PER; d++) { const q = raw[i + d]; if (q !== undefined) { sum += q; n++; } }
+    const nearTip = i < 2 * PER || i > raw.length - 1 - 2 * PER;
+    return nearTip ? Math.min(v, sum / n) : sum / n;
   });
   const L = [], R = [], M = [];
   c.forEach((p, i) => {
@@ -53,23 +61,28 @@ function stroke(ctrl) {
   });
   const facets = [];
   for (let i = 0; i < c.length - 1; i++) facets.push([L[i], L[i + 1], M[i + 1], M[i]], [M[i], M[i + 1], R[i + 1], R[i]]);
-  return { facets, outline: [...L, ...R.reverse()] };
+  return { facets, outline: [...L, ...[...R].reverse()], halves: [[...L, ...[...M].reverse()], [...M, ...[...R].reverse()]] };
 }
 const PARTS = STROKES.map(stroke);
 
 function draw(place, m) {
   let silhouettes = "", body = "";
-  for (const { facets, outline } of PARTS) {
+  for (const { facets, outline, halves } of PARTS) {
     let part = "";
-    for (const f of facets) {
+    const cols = [[], []];
+    facets.forEach((f, i) => {
       // Quads are slightly twisted; the cross of their diagonals gives a stable average normal.
       let n = cross(sub(f[2], f[0]), sub(f[3], f[1]));
       if (n[2] < 0) n = n.map((v) => -v);
       const col = RAMP.shade(norm(n), m);
-      part += `<path d="${pathOf(f.map(place))}" fill="${col}" stroke="${col}" stroke-width="1" stroke-linejoin="round"/>`;
-    }
+      cols[i % 2].push(col);
+      part += `<path d="${pathOf(f.map(place))}" fill="${col}"/>`;
+    });
+    // Each half of the stroke underneath in its middle tone, so the hairline seams between the
+    // thin facets show a matching colour instead of the background.
+    const under = halves.map((h, k) => `<path d="${pathOf(h.map(place))}" fill="${cols[k][cols[k].length >> 1]}"/>`).join("");
     silhouettes += `<path d="${pathOf(outline.map(place))}"/>`;
-    body += part;
+    body += under + part;
   }
   return { silhouettes, body, outlines: PARTS.map((p) => pathOf(p.outline.map(place))) };
 }

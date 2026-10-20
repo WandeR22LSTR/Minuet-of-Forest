@@ -1,0 +1,34 @@
+---
+// Capstone progress log: every published entry from src/content/capstone-log/, newest first.
+// The page is only generated when at least one entry is published.
+import { getCollection, render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { SHOW_DRAFTS, copy } from "../../../lib/site";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("capstoneLog", ({ data }) => SHOW_DRAFTS || !data.draft);
+  return entries.length ? [{ params: { log: "log" } }] : [];
+}
+const entries = (await getCollection("capstoneLog", ({ data }) => SHOW_DRAFTS || !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const rendered = await Promise.all(entries.map(async (e) => ({ e, Content: (await render(e)).Content })));
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const fmt = (d: Date) => d.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+---
+<StarlightPage
+  frontmatter={{ title: "Capstone progress log", description: copy.capstone_log.description }}
+  headings={entries.map((e) => ({ depth: 2, slug: e.id, text: `${iso(e.data.date)} ${e.data.title}` }))}
+>
+  {rendered.map(({ e, Content }) => (
+    <article class="log-entry" id={e.id}>
+      <h2>{e.data.title}{e.data.milestone && <span class="milestone"> · Milestone</span>}</h2>
+      <p class="log-date"><time datetime={iso(e.data.date)}>{fmt(e.data.date)}</time></p>
+      <Content />
+    </article>
+  ))}
+</StarlightPage>
+<style>
+  .log-entry + .log-entry { border-top: 1px solid var(--sage); margin-top: 2rem; padding-top: 1rem; }
+  .log-date { color: var(--muted); margin-top: 0; font-size: 0.9rem; }
+  .milestone { color: var(--link); font-size: 0.8em; }
+</style>

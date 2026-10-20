@@ -18,7 +18,7 @@ const PATTERNS = [
   ["cron expression", /^\s*(?:[\d*\/,-]+\s+){4}[\d*\/,-]+\s+\S/gm],
 ];
 // Files that legitimately contain digits/patterns (lockfile hashes, this scanner).
-const SKIP = [/package-lock\.json$/, /scripts\/scan-private\.mjs$/, /\.(pdf|png|ico|woff2?)$/, /dist\/_astro\//];
+const SKIP = [/package-lock\.json$/, /scripts\/scan-private\.mjs$/, /\.(pdf|png|ico|woff2?|zip)$/, /dist\/_astro\//]; // zips: their contents are also in the repo unzipped
 
 const files = [...(await walk(".")), ...(await walk("dist", []).catch(() => []))];
 let hits = 0;

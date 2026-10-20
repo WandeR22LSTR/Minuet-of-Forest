@@ -2,12 +2,13 @@
 import { render } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Logo from "../components/Logo.astro";
-import { url, publishedPages, copy } from "../lib/site";
+import { url, publishedPages, researchPublished, copy } from "../lib/site";
 
 const pages = await publishedPages();
 const live = new Set(pages.map((p) => p.id));
-const now = pages.find((p) => p.id === "now");
-// "Now" snippet: the first section of the now page, if it is published.
+if (await researchPublished()) live.add("research");
+const now = pages.find((p) => p.id === "currently");
+// Snippet: the first section of the Currently page, if it is published.
 const nowSnippet = now?.body?.split(/\n## /)[1]?.split("\n").filter(Boolean);
 const cards = [
   { title: "Research", text: copy.home.research, href: live.has("research") ? "/research/" : undefined },
@@ -34,9 +35,9 @@ const cards = [
   </ul>
   {now && nowSnippet && (
     <section aria-labelledby="now">
-      <h2 id="now">Now</h2>
+      <h2 id="now">Currently</h2>
       <p><strong>{nowSnippet[0]}:</strong> {nowSnippet.slice(1).join(" ")}</p>
-      <p><a href={url("/now/")}>{copy.home.now_more}</a></p>
+      <p><a href={url("/currently/")}>{copy.home.now_more}</a></p>
     </section>
   )}
 </Base>

@@ -15,4 +15,14 @@ export const collections = {
       updated: z.coerce.date().optional(),
     }),
   }),
+  // Capstone progress log: one file per entry, YYYY-MM-DD-slug.md (README.md is skipped).
+  capstoneLog: defineCollection({
+    loader: glob({ pattern: "[0-9]*.md", base: "./src/content/capstone-log" }),
+    schema: z.object({
+      date: z.coerce.date(),
+      title: z.string(),
+      milestone: z.boolean().default(false),
+      draft: z.boolean().default(false),
+    }),
+  }),
 };

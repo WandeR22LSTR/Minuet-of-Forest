@@ -7,7 +7,7 @@ import { launch } from "./browser.mjs";
 import { NOCTURNE_URL } from "../site.config.mjs";
 
 const axeSource = await readFile(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
-const PAGES = ["/", "/resume/", "/cv/", "/projects/", "/docs/", "/contact/", "/404.html"];
+const PAGES = ["/", "/resume/", "/projects/", "/docs/", "/contact/", "/404.html"];
 const srv = await serve();
 const browser = await launch();
 let failed = false;
@@ -28,7 +28,7 @@ try {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflow > 0) fail(`${p} overflows by ${overflow}px at 360px`);
 
-    if (["/resume/", "/cv/"].includes(p) && (await page.$(".medallion"))) fail(`${p} shows the medallion`);
+    if (p === "/resume/" && (await page.$(".medallion"))) fail(`${p} shows the medallion`);
     await page.close();
   }
 

@@ -1,19 +1,20 @@
 ---
 // Hidden, low-key link to Nocturne of Shadow's login page. Renders nothing until NOCTURNE_URL is set.
 import { NOCTURNE_URL } from "../../site.config.mjs";
+import shadowMark from "../assets/logo/nocturne-mark.svg?url";
 ---
 {NOCTURNE_URL && (
   <a class="medallion" href={NOCTURNE_URL} rel="noopener nofollow" aria-label="Nocturne of Shadow (friends only)">
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5" />
-      <circle cx="12" cy="12" r="3" fill="currentColor" />
-    </svg>
+    <img class="medallion-icon" src={shadowMark} width="22" height="22" alt="" />
     <span class="medallion-label" aria-hidden="true">Nocturne of Shadow (friends only)</span>
   </a>
 )}
 <style>
   .medallion { position: relative; display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); text-decoration: none; padding: 0.25rem; }
   .medallion:hover, .medallion:focus-visible { color: var(--forest); }
+  /* Low-key until hovered or focused. */
+  .medallion-icon { opacity: 0.7; transition: opacity 0.15s; }
+  .medallion:hover .medallion-icon, .medallion:focus-visible .medallion-icon { opacity: 1; }
   .medallion-label {
     font-size: 0.8rem; white-space: nowrap; background: var(--sage); color: var(--forest);
     padding: 0.1rem 0.5rem; border-radius: 4px; opacity: 0; transition: opacity 0.15s;

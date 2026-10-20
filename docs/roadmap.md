@@ -6,7 +6,7 @@ Luca's plan, from 0.6.x (site live, logos done) to 1.0. Phases run in order; thi
 Decide exactly what the site covers and how it is structured, so it is a semi-professional but fun portfolio that holds:
 - documentation for all of Luca's personal projects;
 - his research, with room to grow into his capstone project;
-- the resume (and CV).
+- the resume.
 
 Output: an agreed site map, a content model (what each kind of page contains and where its source lives), and the structural changes to get there. Luca writes all the prose; this phase builds structure only.
 

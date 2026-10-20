@@ -1,6 +1,8 @@
 # Site plan (Phase 1 proposal)
 
-Status: **site map approved 2026-10-20.** Open: the project registry (see Content model).
+Status: **site map approved 2026-10-20.**
+- **Built:** CV and About removed; Currently page; research and capstone in the docs layout with LaTeX; capstone progress log; a docs section per project with overview and changelog stubs.
+- **Waiting:** the project registry, until the Ice Cavern session's format arrives. Diagrams and notebooks will be set up when the first ones arrive.
 
 ## Readers
 1. Research advisor; graduate school and internship reviewers, reached through the link on the resume. The home page and resume serve them first.

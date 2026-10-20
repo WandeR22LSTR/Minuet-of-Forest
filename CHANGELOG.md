@@ -4,6 +4,10 @@ The version is in `package.json` and shows in the site footer next to the medall
 Bump it with every release and add an entry here.
 
 ## Unreleased
+- Phase 1 structure (see `docs/site-plan.md`): CV and About pages removed; Now page replaced by Currently (media);
+  research and capstone moved into the docs layout with LaTeX maths (KaTeX, self-hosted); capstone progress log
+  (`src/content/capstone-log/`); a docs section per project (overview, changelog). Project sidebar groups appear
+  once they have a published page.
 - Shared logo engine for all project logos (`scripts/logos/`, `node scripts/make-logos.mjs`).
 - Prelude of Light logo redrawn with it: consistent top-left lighting, standard margins, soft shadow,
   rounded raster icons, Discord avatar (`logos/prelude-of-light/`).

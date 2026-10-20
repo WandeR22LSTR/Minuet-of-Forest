@@ -11,7 +11,7 @@ Public portfolio and docs site for Luca (WandeR). Static site, hosted free on Gi
 - Nothing from the private sibling site (Nocturne of Shadow) belongs here: no content, no screenshots, no descriptions of what is inside. The one allowed connection is the hidden footer medallion, which points to its login page only, using one config value (`NOCTURNE_URL`).
 
 ## Stack
-Astro (static output) with Starlight for the `/docs/` section. Builds on the Mac or in GitHub Actions, never on the Pi. The resume and CV PDFs are generated at build time (headless Chromium via Playwright) from the same YAML as the web pages.
+Astro (static output) with Starlight for the `/docs/` and `/research/` sections. LaTeX maths via remark-math and KaTeX (self-hosted). Builds on the Mac or in GitHub Actions, never on the Pi. The resume PDF is generated at build time (headless Chromium via Playwright) from the same YAML as the web pages.
 
 ## Look
 Light, easy on the eyes: warm off-white, sage tints, dark forest green as the main color. Tokens in `docs/design-spec.md` and `src/styles/tokens.css`. Function and accessibility first; decorative Ocarina of Time theming and logos come in a later handoff.
@@ -21,8 +21,10 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 - `docs/`: roadmap to 1.0 (`roadmap.md`), site plan (`site-plan.md`), handoff 01, design spec, logo spec, sibling projects, Temple of Time summary and outline
 - `site.config.mjs`: SITE, BASE, NOCTURNE_URL
 - `src/data/copy.yaml`: all site copy, as `[placeholders]` until Luca writes it
-- `src/data/*.yaml`: resume, CV, projects, contact
-- `src/content/pages/*.md`: about, research, now. `src/content/docs/docs/`: Starlight docs
+- `src/data/*.yaml`: resume, projects, contact
+- `src/content/pages/*.md`: currently.
+- `src/content/docs/research/`: research (GRB fellowship page, capstone overview and milestone pages). `src/content/capstone-log/`: capstone progress log, one file per entry
+- `src/content/docs/docs/<project>/`: project docs (overview, pages, changelog). New projects also go in `PROJECTS` in `astro.config.mjs`
 - `scripts/`: PDF build, dist checks, accessibility, privacy scan, todo listing; `scripts/logos/`: shared logo engine (`engine.mjs`), medallion plate (`plate.mjs`) and one file per project
 - `logos/`: generated logo sets for Luca's other projects (not part of the site build)
 
@@ -30,7 +32,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 | Command | What |
 |---|---|
 | `npm run dev` | Dev server (drafts visible, with a banner) |
-| `npm run build` | Static build + `resume.pdf` and `cv.pdf` |
+| `npm run build` | Static build + `resume.pdf` |
 | `npm run preview` | Serve the build under the base path |
 | `npm run check` | Built output: no TODO text, no drafts, no external loads, no broken or base-less links |
 | `npm run a11y` | axe, 360px overflow, keyboard walkthrough, medallion |

@@ -18,7 +18,7 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 
 ## Layout
 - `CLAUDE.md` (this file), `DEPLOY.md` (Luca's deploy steps)
-- `docs/`: roadmap to 1.0 (`roadmap.md`), handoff 01, design spec, logo spec, sibling projects, Temple of Time summary and outline
+- `docs/`: roadmap to 1.0 (`roadmap.md`), site plan (`site-plan.md`), handoff 01, design spec, logo spec, sibling projects, Temple of Time summary and outline
 - `site.config.mjs`: SITE, BASE, NOCTURNE_URL
 - `src/data/copy.yaml`: all site copy, as `[placeholders]` until Luca writes it
 - `src/data/*.yaml`: resume, CV, projects, contact

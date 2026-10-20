@@ -70,13 +70,14 @@ export function mark({ theme = "light", size = 512, fill = 0.4, square = false, 
 }
 
 // On the plate the Triforce sits halfway between centroid-centred (largest, but looks low) and
-// box-centred, and the base corners reach 0.655 of the plate radius, the edge of the recessed face.
+// box-centred, and the base corners reach 0.74 of the plate radius: past the recessed face, over
+// the bevel, just short of the rune band.
 const LIFT = H / 12;
-const PLATE_SCALE = 0.655 / Math.hypot(0.5, H / 3 + LIFT);
-export function medallion({ size = 512, compact = false, id = "ttm" } = {}) {
+const PLATE_SCALE = 0.74 / Math.hypot(0.5, H / 3 + LIFT);
+export function medallion({ size = 512, id = "ttm" } = {}) {
   const gold = THEMES.light.gold;
   return plateMedallion({
-    size, compact, id, ramp: stone, title: "Triforce on the temple plate",
+    size, id, ramp: stone, title: "Triforce on the temple plate",
     content: (place, cast) => {
       const p = ([x, y]) => place([x * PLATE_SCALE, (y + LIFT) * PLATE_SCALE]);
       const e = draw(p, gold, { ambient: 0.1, diffuse: 0.74, spec: 0.32, exposure: 0.04 });

@@ -123,7 +123,6 @@ if (want("temple")) {
     "logo.svg": temple.mark(),
     "logo-dark.svg": temple.mark({ theme: "dark" }),
     "medallion.svg": temple.medallion(),
-    "medallion-compact.svg": temple.medallion({ compact: true }),
   };
   for (const [name, svg] of Object.entries(files)) await writeFile(`${out}/${name}`, svg);
   await rasters(out, { square: temple.mark({ square: true }), tile: files["logo.svg"] });

@@ -1,0 +1,252 @@
+{
+  "lensBlocks": 1,
+  "section": {
+    "props": {
+      "label": {
+        "kind": "text",
+        "label": "Label (for the structure tree)",
+        "default": ""
+      },
+      "surface": {
+        "kind": "token",
+        "group": "surface",
+        "label": "Background",
+        "default": "base"
+      },
+      "padding": {
+        "kind": "token",
+        "group": "space",
+        "label": "Padding",
+        "default": "lg"
+      },
+      "gap": {
+        "kind": "token",
+        "group": "space",
+        "label": "Gap between blocks",
+        "default": "md"
+      }
+    }
+  },
+  "types": {
+    "heading": {
+      "label": "Heading",
+      "props": {
+        "text": {
+          "kind": "text",
+          "label": "Text",
+          "default": "Heading",
+          "required": true,
+          "maxLength": 200
+        },
+        "level": {
+          "kind": "enum",
+          "label": "Level",
+          "options": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "default": 2
+        },
+        "align": {
+          "kind": "enum",
+          "label": "Alignment",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ],
+          "default": "start"
+        }
+      }
+    },
+    "text": {
+      "label": "Text",
+      "props": {
+        "markdown": {
+          "kind": "markdown",
+          "label": "Text (Markdown)",
+          "default": "Write something.",
+          "help": "Markdown: **bold**, *italic*, [link](/path), - lists."
+        },
+        "maxWidth": {
+          "kind": "token",
+          "group": "measure",
+          "label": "Max width",
+          "default": "prose"
+        },
+        "align": {
+          "kind": "enum",
+          "label": "Alignment",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ],
+          "default": "start"
+        }
+      }
+    },
+    "image": {
+      "label": "Image",
+      "layout": {
+        "col": 1,
+        "span": 6
+      },
+      "props": {
+        "src": {
+          "kind": "asset",
+          "label": "Image",
+          "default": "",
+          "focal": [
+            "focalX",
+            "focalY"
+          ],
+          "ratio": "ratio",
+          "fit": "fit",
+          "help": "Pick one of the site's images, add one from your computer, or drop an image here."
+        },
+        "alt": {
+          "kind": "text",
+          "label": "Alt text (empty if decorative)",
+          "default": "",
+          "help": "Describe what the image shows for people who can't see it. Leave it empty only if the image is decoration."
+        },
+        "ratio": {
+          "kind": "enum",
+          "label": "Aspect ratio",
+          "options": [
+            "auto",
+            "1/1",
+            "4/3",
+            "3/2",
+            "16/9",
+            "3/4"
+          ],
+          "default": "auto"
+        },
+        "fit": {
+          "kind": "enum",
+          "label": "Fit",
+          "options": [
+            "cover",
+            "contain"
+          ],
+          "default": "cover",
+          "help": "Cover fills the frame and crops the edges; contain shows the whole image."
+        },
+        "focalX": {
+          "kind": "number",
+          "label": "Focal point across (%)",
+          "min": 0,
+          "max": 100,
+          "integer": true,
+          "default": 50
+        },
+        "focalY": {
+          "kind": "number",
+          "label": "Focal point down (%)",
+          "min": 0,
+          "max": 100,
+          "integer": true,
+          "default": 50
+        }
+      }
+    },
+    "button": {
+      "label": "Button",
+      "layout": {
+        "col": 1,
+        "span": 3
+      },
+      "props": {
+        "label": {
+          "kind": "text",
+          "label": "Label",
+          "default": "Button",
+          "required": true,
+          "maxLength": 60
+        },
+        "href": {
+          "kind": "url",
+          "label": "Link",
+          "default": "/",
+          "help": "A site path such as /about/, or a full https:// link."
+        },
+        "variant": {
+          "kind": "enum",
+          "label": "Style",
+          "options": [
+            "primary",
+            "secondary"
+          ],
+          "default": "primary"
+        }
+      }
+    },
+    "spacer": {
+      "label": "Spacer",
+      "props": {
+        "size": {
+          "kind": "token",
+          "group": "space",
+          "label": "Height",
+          "default": "lg"
+        }
+      }
+    },
+    "group": {
+      "label": "Group (columns)",
+      "children": [
+        "heading",
+        "text",
+        "image",
+        "button",
+        "spacer",
+        "embed"
+      ],
+      "props": {
+        "gap": {
+          "kind": "token",
+          "group": "space",
+          "label": "Gap",
+          "default": "md"
+        },
+        "surface": {
+          "kind": "token",
+          "group": "surface",
+          "label": "Background",
+          "default": "base"
+        }
+      }
+    },
+    "embed": {
+      "label": "Embed",
+      "props": {
+        "src": {
+          "kind": "url",
+          "label": "Embed URL (https)",
+          "default": "",
+          "help": "A full https:// link to a video or map embed."
+        },
+        "title": {
+          "kind": "text",
+          "label": "Title (for screen readers)",
+          "default": "Embedded content",
+          "required": true
+        },
+        "ratio": {
+          "kind": "enum",
+          "label": "Aspect ratio",
+          "options": [
+            "16/9",
+            "4/3",
+            "1/1"
+          ],
+          "default": "16/9"
+        }
+      }
+    }
+  }
+}

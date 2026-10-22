@@ -1,0 +1,122 @@
+---
+// One Lens block. Group blocks render their children on a nested 12-column grid.
+import { renderMarkdown, withBase } from './markdown';
+import config from './lens.config.json';
+
+interface Placement { col?: number; span?: number; order?: number; hidden?: boolean }
+interface Props {
+  block: {
+    id: string;
+    type: string;
+    props: Record<string, any>;
+    layout: Placement & { col: number; span: number; at?: Record<string, Placement> };
+    children?: Props['block'][];
+  };
+}
+
+const { block } = Astro.props;
+const dev = import.meta.env.DEV;
+const p = block.props;
+
+// Resolve placement at each breakpoint; narrower breakpoints inherit wider overrides.
+const vars: string[] = [];
+let cur = { col: block.layout.col, span: block.layout.span, order: block.layout.order ?? 0, hidden: block.layout.hidden ?? false };
+const emit = (prefix: string) =>
+  vars.push(`--l${prefix}-col:${cur.col}`, `--l${prefix}-span:${cur.span}`, `--l${prefix}-order:${cur.order}`, `--l${prefix}-display:${cur.hidden ? 'none' : 'block'}`);
+emit('');
+for (const bp of config.breakpoints) {
+  const o = block.layout.at?.[bp.name] ?? {};
+  cur = { col: o.col ?? cur.col, span: o.span ?? cur.span, order: o.order ?? cur.order, hidden: o.hidden ?? cur.hidden };
+  emit(`-${bp.name}`);
+}
+
+// Layouts store site paths without the base (/images/a.jpg, /about/); add the
+// base from astro.config here, so the site keeps working if it ever changes.
+const base = import.meta.env.BASE_URL;
+const site = (path: unknown) => (typeof path === 'string' ? withBase(base, path) : path);
+
+const Heading = `h${p.level ?? 2}`;
+const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
+---
+<div
+  class={`lens-block lens-type-${block.type}`}
+  data-lens-id={dev ? block.id : undefined}
+  data-lens-type={dev ? block.type : undefined}
+  style={vars.join(';')}
+>
+  {block.type === 'heading' && <Heading style={`text-align:${p.align ?? 'start'}`}>{p.text}</Heading>}
+  {block.type === 'text' && (
+    <div class="lens-prose" style={`max-width:var(--measure-${p.maxWidth ?? 'prose'});text-align:${p.align ?? 'start'}`} set:html={renderMarkdown(p.markdown ?? '', base)} />
+  )}
+  {block.type === 'image' && (p.src ? (
+    <img
+      src={site(p.src)}
+      alt={p.alt ?? ''}
+      loading="lazy"
+      style={`aspect-ratio:${ratio(p.ratio)};object-fit:${p.fit ?? 'cover'};object-position:${p.focalX ?? 50}% ${p.focalY ?? 50}%`}
+    />
+  ) : (
+    dev && <div class="lens-empty">No image chosen</div>
+  ))}
+  {block.type === 'button' && <a class={`lens-button lens-button-${p.variant ?? 'primary'}`} href={site(p.href) || '#'}>{p.label}</a>}
+  {block.type === 'spacer' && <div aria-hidden="true" style={`height:var(--space-${p.size ?? 'lg'})`} />}
+  {block.type === 'embed' && (p.src ? (
+    <iframe src={site(p.src)} title={p.title} loading="lazy" style={`aspect-ratio:${p.ratio ?? '16/9'}`} />
+  ) : (
+    dev && <div class="lens-empty">No embed URL</div>
+  ))}
+  {block.type === 'group' && (
+    <div
+      class="lens-grid lens-group"
+      data-lens-grid={dev ? block.id : undefined}
+      style={`--l-gap:var(--space-${p.gap ?? 'md'});background:var(--surface-${p.surface ?? 'base'})`}
+    >
+      {(block.children ?? []).map((child) => <Astro.self block={child} />)}
+    </div>
+  )}
+</div>
+
+<style>
+  .lens-block {
+    min-width: 0;
+  }
+  .lens-type-image img,
+  .lens-type-embed iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+  }
+  .lens-group {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: var(--l-gap);
+    /* Capped so twelve columns and eleven gaps always fit on a small screen. */
+    column-gap: min(var(--l-gap), 4%);
+  }
+  .lens-button {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md, 0.5rem);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .lens-button-primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .lens-button-secondary {
+    border: 2px solid var(--color-accent);
+    color: var(--color-text);
+  }
+  .lens-button:focus-visible {
+    outline: 3px solid var(--color-focus, currentColor);
+    outline-offset: 2px;
+  }
+  .lens-empty {
+    padding: var(--space-md);
+    border: 2px dashed currentColor;
+    opacity: 0.7;
+    text-align: center;
+  }
+</style>

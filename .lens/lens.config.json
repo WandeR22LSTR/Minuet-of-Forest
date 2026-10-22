@@ -5,11 +5,11 @@
     "command": "npm run dev -- --port {port} --host 127.0.0.1 --ignore-lock",
     "url": "http://127.0.0.1:{port}"
   },
-  "base": "",
+  "base": "/minuet-of-forest",
   "pages": [
     {
       "name": "home",
-      "layout": "src/content/layouts/home.layout.json",
+      "layout": "src/data/layouts/home.layout.json",
       "route": "/"
     }
   ],
@@ -34,8 +34,8 @@
     ],
     "surface": [
       "base",
-      "raised",
-      "accent"
+      "sage",
+      "white"
     ],
     "measure": [
       "narrow",

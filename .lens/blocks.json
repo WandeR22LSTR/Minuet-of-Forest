@@ -4,7 +4,7 @@
     "props": {
       "label": {
         "kind": "text",
-        "label": "Label (for the structure tree)",
+        "label": "Label (for the structure tree, not shown on the site)",
         "default": ""
       },
       "surface": {
@@ -16,8 +16,9 @@
       "padding": {
         "kind": "token",
         "group": "space",
-        "label": "Padding",
-        "default": "lg"
+        "label": "Space above and below",
+        "default": "lg",
+        "help": "Coloured backgrounds also get this space at the sides."
       },
       "gap": {
         "kind": "token",
@@ -34,7 +35,7 @@
         "text": {
           "kind": "text",
           "label": "Text",
-          "default": "Heading",
+          "default": "[heading]",
           "required": true,
           "maxLength": 200
         },
@@ -67,7 +68,7 @@
         "markdown": {
           "kind": "markdown",
           "label": "Text (Markdown)",
-          "default": "Write something.",
+          "default": "[text]",
           "help": "Markdown: **bold**, *italic*, [link](/path), - lists."
         },
         "maxWidth": {
@@ -164,7 +165,7 @@
         "label": {
           "kind": "text",
           "label": "Label",
-          "default": "Button",
+          "default": "[button label]",
           "required": true,
           "maxLength": 60
         },
@@ -204,7 +205,9 @@
         "image",
         "button",
         "spacer",
-        "embed"
+        "embed",
+        "logo",
+        "card"
       ],
       "props": {
         "gap": {
@@ -228,12 +231,12 @@
           "kind": "url",
           "label": "Embed URL (https)",
           "default": "",
-          "help": "A full https:// link to a video or map embed."
+          "help": "A page on this site, such as /docs/. Minuet loads nothing from other sites, so npm run check refuses outside embeds."
         },
         "title": {
           "kind": "text",
           "label": "Title (for screen readers)",
-          "default": "Embedded content",
+          "default": "[embed title]",
           "required": true
         },
         "ratio": {
@@ -245,6 +248,80 @@
             "1/1"
           ],
           "default": "16/9"
+        }
+      }
+    },
+    "logo": {
+      "label": "Logo",
+      "layout": {
+        "col": 1,
+        "span": 2
+      },
+      "props": {
+        "size": {
+          "kind": "number",
+          "label": "Size (px)",
+          "min": 40,
+          "max": 160,
+          "integer": true,
+          "default": 96,
+          "help": "Largest size. It shrinks on small screens and never overflows its columns."
+        }
+      }
+    },
+    "card": {
+      "label": "Card",
+      "layout": {
+        "col": 1,
+        "span": 4
+      },
+      "props": {
+        "title": {
+          "kind": "text",
+          "label": "Title",
+          "default": "[card title]",
+          "required": true,
+          "maxLength": 80
+        },
+        "text": {
+          "kind": "markdown",
+          "label": "Text (Markdown)",
+          "default": "[card text]"
+        },
+        "href": {
+          "kind": "url",
+          "label": "Link",
+          "default": "",
+          "help": "The title links here. A page that is still a draft (Research, Currently) isn't linked until it's published."
+        },
+        "pending": {
+          "kind": "text",
+          "label": "Note while the page isn't published",
+          "default": "",
+          "help": "Shown under the text when the link's page is still a draft. Leave empty for none."
+        }
+      }
+    },
+    "currently": {
+      "label": "Currently snippet",
+      "layout": {
+        "col": 1,
+        "span": 12
+      },
+      "props": {
+        "heading": {
+          "kind": "text",
+          "label": "Heading",
+          "default": "Currently",
+          "required": true,
+          "maxLength": 80
+        },
+        "more": {
+          "kind": "text",
+          "label": "Link to the Currently page",
+          "default": "[link to the Currently page]",
+          "required": true,
+          "maxLength": 80
         }
       }
     }

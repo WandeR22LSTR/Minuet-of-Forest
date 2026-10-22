@@ -1,6 +1,5 @@
 # Lens of Truth in this project
 
-
 This folder adapts **Lens of Truth**, Luca's private desktop layout editor, to **Minuet of Forest** (Astro). "Nabooru" is Luca's name for Claude, so if Luca asks Nabooru to work on Lens here, that's you.
 
 ## What lives where
@@ -14,6 +13,27 @@ This folder adapts **Lens of Truth**, Luca's private desktop layout editor, to *
   | `LensPage.*` | Renders layout JSON with this project's own components and styles |
 
 - **Layout files** live at the paths in `lens.config`. They're content: edit them through Lens, or carefully by hand.
+
+## How Lens fits Minuet
+The full handoff is `docs/lens-of-truth-handoff.md`. Minuet's own `CLAUDE.md` wins wherever the two meet.
+
+- **Pages:** only the homepage (`src/pages/index.astro`) is a Lens page. Its layout is `src/data/layouts/home.layout.json`. Every other page is hand-built and Lens leaves it alone.
+- **Base path:** `base` in `lens.config.json` is `/minuet-of-forest` and must match `BASE` in `site.config.mjs`. If BASE changes (a custom domain), change it here too. Layouts store site paths without the base; the renderer adds it.
+- **Images** that Luca adds through Lens go to `public/images/` (served at `/images/`). They are the site's content.
+- **Tokens:** surfaces `base`, `sage`, `white` are `--bg`, `--sage`, `--white`. Text uses Minuet's own heading and body styles (`global.css`), and primary buttons are Minuet's `.button`. No new colours.
+- **Spacing:** Minuet has no spacing tokens, and Luca chose not to add any for now. The names `none`, `xs`, `sm`, `md`, `lg`, `xl` are mapped to fixed `rem` sizes in `LensPage.astro` only. Don't add them to `tokens.css` or the design spec without Luca.
+- **Sections** already sit in Minuet's `.wrap`. On the base background they only get space above and below; on `sage` or `white` they are padded all round. A section's label is for the structure tree only and isn't put on the page, so it is never text a visitor reads.
+- **Minuet block types** keep the homepage's dynamic parts working:
+  - `logo`: the site logo (`src/components/Logo.astro`).
+  - `card`: like the old homepage cards. Its title links only once the linked page is published (`isPublished()` in `src/lib/site.ts`); until then it shows its note.
+  - `currently`: the first section of the Currently page (`currentlySnippet()`), shown only while that page is published.
+- **Links in text and buttons** aren't hidden when their page is a draft. If one points at a draft page, `npm run check` reports a broken link in the build, so point them at published pages.
+- **Embeds:** Minuet loads nothing from other sites, so an embed must be a page on this site. `npm run check` refuses outside ones.
+
+## Text on Lens pages
+Luca writes all text a visitor reads. Text that isn't written yet is a `[placeholder]`, and new blocks start with one. `npm run todos` lists the placeholders in layout files with the rest. Nothing typed in Lens can be lost:
+- Lens writes every edit to the layout file straight away, atomically, so a crash never leaves a half-written or unsaved layout.
+- The layout files are in git, so committing (and pushing) is the backup. Commit after a Lens session.
 
 ## Lens must be adapted to this project
 The template `lens init` produced is a starting point, not a finished fit. When you arrive:

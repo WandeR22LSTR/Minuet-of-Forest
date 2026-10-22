@@ -1,7 +1,12 @@
 ---
 // One Lens block. Group blocks render their children on a nested 12-column grid.
+// logo, card and currently are Minuet's own block types: they keep the homepage's
+// dynamic parts working (the logo, cards that link only once their page is
+// published, and the snippet from the Currently page).
 import { renderMarkdown, withBase } from './markdown';
 import config from './lens.config.json';
+import Logo from '../src/components/Logo.astro';
+import { isPublished, currentlySnippet } from '../src/lib/site';
 
 interface Placement { col?: number; span?: number; order?: number; hidden?: boolean }
 interface Props {
@@ -24,6 +29,7 @@ let cur = { col: block.layout.col, span: block.layout.span, order: block.layout.
 const emit = (prefix: string) =>
   vars.push(`--l${prefix}-col:${cur.col}`, `--l${prefix}-span:${cur.span}`, `--l${prefix}-order:${cur.order}`, `--l${prefix}-display:${cur.hidden ? 'none' : 'block'}`);
 emit('');
+if (block.type === 'logo') vars.push(`--logo-size:${p.size ?? 96}px`);
 for (const bp of config.breakpoints) {
   const o = block.layout.at?.[bp.name] ?? {};
   cur = { col: o.col ?? cur.col, span: o.span ?? cur.span, order: o.order ?? cur.order, hidden: o.hidden ?? cur.hidden };
@@ -37,8 +43,15 @@ const site = (path: unknown) => (typeof path === 'string' ? withBase(base, path)
 
 const Heading = `h${p.level ?? 2}`;
 const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
+
+// A card links only once its page is published; until then it shows its note instead.
+const linked = block.type === 'card' && !!p.href && (await isPublished(p.href));
+// The Currently snippet exists only while the Currently page is published. Without it the
+// block renders nothing in the build, and a note in dev so Lens can still select it.
+const now = block.type === 'currently' ? await currentlySnippet() : undefined;
+const empty = block.type === 'currently' && !now && !dev;
 ---
-<div
+{!empty && (<div
   class={`lens-block lens-type-${block.type}`}
   data-lens-id={dev ? block.id : undefined}
   data-lens-type={dev ? block.type : undefined}
@@ -58,7 +71,7 @@ const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
   ) : (
     dev && <div class="lens-empty">No image chosen</div>
   ))}
-  {block.type === 'button' && <a class={`lens-button lens-button-${p.variant ?? 'primary'}`} href={site(p.href) || '#'}>{p.label}</a>}
+  {block.type === 'button' && <a class={`button lens-button-${p.variant ?? 'primary'}`} href={site(p.href) || '#'}>{p.label}</a>}
   {block.type === 'spacer' && <div aria-hidden="true" style={`height:var(--space-${p.size ?? 'lg'})`} />}
   {block.type === 'embed' && (p.src ? (
     <iframe src={site(p.src)} title={p.title} loading="lazy" style={`aspect-ratio:${p.ratio ?? '16/9'}`} />
@@ -74,11 +87,39 @@ const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
       {(block.children ?? []).map((child) => <Astro.self block={child} />)}
     </div>
   )}
-</div>
+  {block.type === 'logo' && <Logo variant="bare" size={p.size ?? 96} />}
+  {block.type === 'card' && (
+    <div class="card">
+      <h2>{linked ? <a href={site(p.href)}>{p.title}</a> : p.title}</h2>
+      {p.text && <div set:html={renderMarkdown(p.text, base)} />}
+      {!linked && p.pending && <p class="muted">{p.pending}</p>}
+    </div>
+  )}
+  {block.type === 'currently' && (now ? (
+    <section aria-labelledby={`lens-${block.id}`}>
+      <h2 id={`lens-${block.id}`}>{p.heading}</h2>
+      <p><strong>{now.heading}:</strong> {now.text}</p>
+      <p><a href={site('/currently/')}>{p.more}</a></p>
+    </section>
+  ) : (
+    <div class="lens-empty">Currently snippet: shown once the Currently page is published</div>
+  ))}
+</div>)}
 
 <style>
   .lens-block {
     min-width: 0;
+  }
+  /* Spacing between blocks comes from the grid gaps, so the outer margins of block content go. */
+  .lens-block > :global(:first-child),
+  .lens-prose > :global(:first-child),
+  .lens-type-currently section > :global(:first-child) {
+    margin-top: 0;
+  }
+  .lens-block > :global(:last-child),
+  .lens-prose > :global(:last-child),
+  .lens-type-currently section > :global(:last-child) {
+    margin-bottom: 0;
   }
   .lens-type-image img,
   .lens-type-embed iframe {
@@ -94,24 +135,26 @@ const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
     /* Capped so twelve columns and eleven gaps always fit on a small screen. */
     column-gap: min(var(--l-gap), 4%);
   }
-  .lens-button {
-    display: inline-block;
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md, 0.5rem);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .lens-button-primary {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
-  }
+  /* Primary buttons are Minuet's .button (global.css); secondary is its outlined twin. */
   .lens-button-secondary {
-    border: 2px solid var(--color-accent);
-    color: var(--color-text);
+    background: transparent;
+    color: var(--forest);
+    box-shadow: inset 0 0 0 2px var(--forest);
   }
-  .lens-button:focus-visible {
-    outline: 3px solid var(--color-focus, currentColor);
-    outline-offset: 2px;
+  .lens-button-secondary:hover {
+    background: var(--sage);
+    color: var(--forest);
+  }
+  .lens-type-logo {
+    align-self: center;
+  }
+  /* Like the .hero logo (global.css): it shrinks on small screens. */
+  .lens-type-logo :global(.logo) {
+    display: block;
+    width: clamp(40px, 16vw, var(--logo-size));
+  }
+  .lens-type-card .card {
+    height: 100%;
   }
   .lens-empty {
     padding: var(--space-md);

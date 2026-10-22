@@ -1,0 +1,73 @@
+{
+  "lens": 1,
+  "page": "home",
+  "sections": [
+    {
+      "id": "intro",
+      "props": { "label": "Intro", "surface": "base", "padding": "none", "gap": "md" },
+      "blocks": [
+        {
+          "id": "logo",
+          "type": "logo",
+          "props": { "size": 96 },
+          "layout": { "col": 1, "span": 2, "at": { "sm": { "span": 3 } } }
+        },
+        {
+          "id": "intro-text",
+          "type": "group",
+          "props": { "gap": "xs", "surface": "base" },
+          "layout": { "col": 3, "span": 10, "at": { "sm": { "col": 4, "span": 9 } } },
+          "children": [
+            {
+              "id": "title",
+              "type": "heading",
+              "props": { "text": "[title]", "level": 1, "align": "start" },
+              "layout": { "col": 1, "span": 12 }
+            },
+            {
+              "id": "lede",
+              "type": "text",
+              "props": { "markdown": "[introduction]", "maxWidth": "full", "align": "start" },
+              "layout": { "col": 1, "span": 12 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cards",
+      "props": { "label": "Cards", "surface": "base", "padding": "md", "gap": "md" },
+      "blocks": [
+        {
+          "id": "card-research",
+          "type": "card",
+          "props": {
+            "title": "Research",
+            "text": "[one line about research]",
+            "href": "/research/",
+            "pending": "[note shown until the research page is published]"
+          },
+          "layout": { "col": 1, "span": 4, "at": { "sm": { "span": 12 } } }
+        },
+        {
+          "id": "card-projects",
+          "type": "card",
+          "props": { "title": "Projects", "text": "[one line about projects]", "href": "/projects/", "pending": "" },
+          "layout": { "col": 5, "span": 4, "at": { "sm": { "col": 1, "span": 12 } } }
+        },
+        {
+          "id": "card-resume",
+          "type": "card",
+          "props": { "title": "Resume", "text": "[one line about the resume]", "href": "/resume/", "pending": "" },
+          "layout": { "col": 9, "span": 4, "at": { "sm": { "col": 1, "span": 12 } } }
+        },
+        {
+          "id": "currently",
+          "type": "currently",
+          "props": { "heading": "Currently", "more": "[link to the Currently page]" },
+          "layout": { "col": 1, "span": 12 }
+        }
+      ]
+    }
+  ]
+}

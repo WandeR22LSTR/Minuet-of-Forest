@@ -1,43 +1,10 @@
 ---
-import { render } from "astro:content";
+// The homepage is a Lens of Truth page: its content and arrangement live in
+// src/data/layouts/home.layout.json (see .lens/CLAUDE.md).
 import Base from "../layouts/Base.astro";
-import Logo from "../components/Logo.astro";
-import { url, publishedPages, researchPublished, copy } from "../lib/site";
-
-const pages = await publishedPages();
-const live = new Set(pages.map((p) => p.id));
-if (await researchPublished()) live.add("research");
-const now = pages.find((p) => p.id === "currently");
-// Snippet: the first section of the Currently page, if it is published.
-const nowSnippet = now?.body?.split(/\n## /)[1]?.split("\n").filter(Boolean);
-const cards = [
-  { title: "Research", text: copy.home.research, href: live.has("research") ? "/research/" : undefined },
-  { title: "Projects", text: copy.home.projects, href: "/projects/" },
-  { title: "Resume", text: copy.home.resume, href: "/resume/" },
-];
+import LensPage from "../../.lens/LensPage.astro";
+import layout from "../data/layouts/home.layout.json";
 ---
 <Base>
-  <section class="hero" aria-labelledby="intro">
-    <Logo variant="bare" size={96} />
-    <div>
-      <h1 id="intro">{copy.home.title}</h1>
-      <p>{copy.home.intro}</p>
-    </div>
-  </section>
-  <ul class="cards">
-    {cards.map((c) => (
-      <li class="card">
-        <h2>{c.href ? <a href={url(c.href)}>{c.title}</a> : c.title}</h2>
-        <p>{c.text}</p>
-        {!c.href && <p class="muted">{copy.home.research_pending}</p>}
-      </li>
-    ))}
-  </ul>
-  {now && nowSnippet && (
-    <section aria-labelledby="now">
-      <h2 id="now">Currently</h2>
-      <p><strong>{nowSnippet[0]}:</strong> {nowSnippet.slice(1).join(" ")}</p>
-      <p><a href={url("/currently/")}>{copy.home.now_more}</a></p>
-    </section>
-  )}
+  <LensPage layout={layout} />
 </Base>

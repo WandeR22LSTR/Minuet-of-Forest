@@ -3,7 +3,7 @@
 import { readFile } from "node:fs/promises";
 import { walk, draftFiles, routeOf } from "./lib.mjs";
 
-const files = (await walk("src")).filter((f) => /\.(md|mdx|astro|ya?ml|ts|mjs)$/.test(f));
+const files = (await walk("src")).filter((f) => /\.(md|mdx|astro|ya?ml|ts|mjs)$|\.layout\.json$/.test(f));
 let count = 0;
 for (const f of files) {
   (await readFile(f, "utf8")).split("\n").forEach((line, i) => {
@@ -13,9 +13,9 @@ for (const f of files) {
     }
   });
 }
-// Placeholders: "[lowercase words]" in site copy and content (Markdown links excluded).
+// Placeholders: "[lowercase words]" in site copy, content and Lens layouts (Markdown links excluded).
 let placeholders = 0;
-for (const f of files.filter((f) => /\.(ya?ml|md|mdx)$/.test(f))) {
+for (const f of files.filter((f) => /\.(ya?ml|md|mdx)$|\.layout\.json$/.test(f))) {
   (await readFile(f, "utf8")).split("\n").forEach((line, i) => {
     for (const m of line.matchAll(/\[[a-z0-9][^\]\n]*\](?!\()/g)) {
       console.log(`${f}:${i + 1}: ${m[0]}`);

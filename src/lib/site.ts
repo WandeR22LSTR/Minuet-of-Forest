@@ -44,17 +44,38 @@ export async function researchPublished() {
   return (await getCollection("docs", ({ id, data }) => id === "research" && (SHOW_DRAFTS || !data.draft))).length > 0;
 }
 
-/** Main navigation. Pages backed by a draft entry disappear in production. */
-export async function navItems() {
+/** Main navigation. Entries marked `entry` exist only once that page is published. */
+const NAV = [
+  { href: "/research/", label: "Research", entry: "research" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/docs/", label: "Docs" },
+  { href: "/resume/", label: "Resume" },
+  { href: "/currently/", label: "Currently", entry: "currently" },
+  { href: "/contact/", label: "Contact" },
+];
+
+/** IDs of published entries: the pages collection, plus "research" once it is published. */
+async function liveEntries() {
   const live = new Set((await publishedPages()).map((p) => p.id));
   if (await researchPublished()) live.add("research");
-  const items = [
-    { href: "/research/", label: "Research", entry: "research" },
-    { href: "/projects/", label: "Projects" },
-    { href: "/docs/", label: "Docs" },
-    { href: "/resume/", label: "Resume" },
-    { href: "/currently/", label: "Currently", entry: "currently" },
-    { href: "/contact/", label: "Contact" },
-  ];
-  return items.filter((i) => !i.entry || live.has(i.entry));
+  return live;
+}
+
+/** Main navigation. Pages backed by a draft entry disappear in production. */
+export async function navItems() {
+  const live = await liveEntries();
+  return NAV.filter((i) => !i.entry || live.has(i.entry));
+}
+
+/** Whether a site path can be linked: false for a page whose entry is still a draft in production. */
+export async function isPublished(href: string) {
+  const entry = NAV.find((i) => i.href === href)?.entry;
+  return !entry || (await liveEntries()).has(entry);
+}
+
+/** The first section of the Currently page (its heading, then its lines), if the page is published. */
+export async function currentlySnippet() {
+  const now = (await publishedPages()).find((p) => p.id === "currently");
+  const lines = now?.body?.split(/^## /m)[1]?.split("\n").filter(Boolean);
+  return lines ? { heading: lines[0], text: lines.slice(1).join(" ") } : undefined;
 }

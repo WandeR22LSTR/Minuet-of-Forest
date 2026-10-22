@@ -1,0 +1,51 @@
+{
+  "lensConfig": 1,
+  "framework": "astro",
+  "dev": {
+    "command": "npm run dev -- --port {port} --host 127.0.0.1 --ignore-lock",
+    "url": "http://127.0.0.1:{port}"
+  },
+  "base": "/minuet-of-forest",
+  "pages": [
+    {
+      "name": "home",
+      "layout": "src/data/layouts/home.layout.json",
+      "route": "/"
+    }
+  ],
+  "breakpoints": [
+    {
+      "name": "md",
+      "maxWidth": 1024
+    },
+    {
+      "name": "sm",
+      "maxWidth": 640
+    }
+  ],
+  "tokens": {
+    "space": [
+      "none",
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl"
+    ],
+    "surface": [
+      "base",
+      "sage",
+      "white"
+    ],
+    "measure": [
+      "narrow",
+      "prose",
+      "wide",
+      "full"
+    ]
+  },
+  "assets": {
+    "dir": "public/images",
+    "url": "/images/"
+  }
+}

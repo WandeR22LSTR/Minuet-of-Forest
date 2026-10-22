@@ -1,0 +1,76 @@
+---
+// Renders a Lens layout file with Minuet's markup and tokens (src/styles/tokens.css).
+// Project-owned: adapt it to the project's components (see .lens/CLAUDE.md).
+// Lens IDs are added in dev only. The Lens app injects its own bridge into the
+// preview, so nothing here references Lens code.
+import LensBlock from './LensBlock.astro';
+import config from './lens.config.json';
+
+interface Props {
+  layout: { sections: { id: string; props: Record<string, any>; blocks: any[] }[] };
+}
+
+const { layout } = Astro.props;
+const dev = import.meta.env.DEV;
+const bps = config.breakpoints;
+
+// One rule per breakpoint, generated from lens.config so the two never drift apart.
+const place = (p: string) =>
+  `grid-column:var(--l${p}-col)/span var(--l${p}-span);order:var(--l${p}-order);display:var(--l${p}-display)`;
+const css = [
+  `.lens-block{${place('')}}`,
+  ...bps.map((b) => `@media (max-width:${b.maxWidth}px){.lens-block{${place(`-${b.name}`)}}}`),
+].join('\n');
+---
+<style is:inline set:html={css}></style>
+<div class="lens-page">
+  {layout.sections.map((s) => {
+    const surface = s.props.surface ?? 'base';
+    return (
+      <section
+        class="lens-section"
+        data-lens-id={dev ? s.id : undefined}
+        data-lens-type={dev ? 'section' : undefined}
+        style={`--l-surface:var(--surface-${surface});--l-pad:var(--space-${s.props.padding ?? 'lg'});--l-pad-inline:${surface === 'base' ? '0px' : 'var(--l-pad)'};--l-gap:var(--space-${s.props.gap ?? 'md'})`}
+      >
+        <div class="lens-grid" data-lens-grid={dev ? s.id : undefined}>
+          {s.blocks.map((b) => <LensBlock block={b} />)}
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<style>
+  /* Minuet has no spacing tokens (docs/design-spec.md), so Lens's spacing names map to
+     fixed sizes here, in .lens only. Surfaces and measures map to Minuet's own tokens and widths. */
+  .lens-page {
+    --space-none: 0px;
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2.5rem;
+    --surface-base: var(--bg);
+    --surface-sage: var(--sage);
+    --surface-white: var(--white);
+    --measure-narrow: 24rem;
+    --measure-prose: 40rem;
+    --measure-wide: 60rem;
+    --measure-full: 100%;
+  }
+  /* The page already sits in Minuet's .wrap, which gives the side margins. Sections on the
+     base background only add space above and below; coloured ones are padded all round. */
+  .lens-section {
+    background: var(--l-surface);
+    padding: var(--l-pad) var(--l-pad-inline);
+    border-radius: 8px;
+  }
+  .lens-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    row-gap: var(--l-gap);
+    /* Capped so twelve columns and eleven gaps always fit on a small screen. */
+    column-gap: min(var(--l-gap), 4%);
+  }
+</style>

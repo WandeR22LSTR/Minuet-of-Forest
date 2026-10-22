@@ -76,6 +76,6 @@ export async function isPublished(href: string) {
 /** The first section of the Currently page (its heading, then its lines), if the page is published. */
 export async function currentlySnippet() {
   const now = (await publishedPages()).find((p) => p.id === "currently");
-  const lines = now?.body?.split(/\n## /)[1]?.split("\n").filter(Boolean);
+  const lines = now?.body?.split(/^## /m)[1]?.split("\n").filter(Boolean);
   return lines ? { heading: lines[0], text: lines.slice(1).join(" ") } : undefined;
 }

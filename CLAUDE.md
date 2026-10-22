@@ -2,6 +2,8 @@
 
 Public portfolio and docs site for Luca (WandeR). Static site, hosted free on GitHub Pages as a project site at `https://wander22lstr.github.io/minuet-of-forest/`. `site` and `base` live in one place, `site.config.mjs` (`BASE = "/minuet-of-forest"`), so a future custom domain only needs those values changed. Every internal link and asset must respect `base` (use `url()` from `src/lib/site.ts`). **This repo is public: every file in it, including this one, is visible to anyone.**
 
+This project uses Lens of Truth; see `.lens/CLAUDE.md`.
+
 ## Hard rules
 - Never put private information in this repo: no IP addresses, tailnet or host names, MAC addresses, SSH aliases, usernames of machines, schedules, tokens, webhooks, Discord IDs, home address, phone number. `npm run scan` checks for these.
 - Never invent content. Resume bullets, dates, research claims, publications, grades, affiliations and links come from Luca. Use `TODO(Luca)` placeholders and mark unfinished pages `draft: true`; drafts are excluded from the production build and navigation.
@@ -18,10 +20,12 @@ Light, easy on the eyes: warm off-white, sage tints, dark forest green as the ma
 
 ## Layout
 - `CLAUDE.md` (this file), `DEPLOY.md` (Luca's deploy steps)
-- `docs/`: roadmap to 1.0 (`roadmap.md`), site plan (`site-plan.md`), handoff 01, design spec, logo spec, sibling projects, Temple of Time summary and outline
+- `docs/`: roadmap to 1.0 (`roadmap.md`), site plan (`site-plan.md`), handoff 01, design spec, logo spec, sibling projects, Temple of Time summary and outline, Lens of Truth handoff (`lens-of-truth-handoff.md`)
 - `site.config.mjs`: SITE, BASE, NOCTURNE_URL
-- `src/data/copy.yaml`: all site copy, as `[placeholders]` until Luca writes it
+- `src/data/copy.yaml`: site copy (except the homepage's, which is in its layout), as `[placeholders]` until Luca writes it
 - `src/data/*.yaml`: resume, projects, contact
+- `src/data/layouts/`: Lens of Truth layouts (`home.layout.json` is the homepage, text included)
+- `.lens/`: Lens of Truth adapter (config, block types, renderer, its own `CLAUDE.md`)
 - `src/content/pages/*.md`: currently.
 - `src/content/docs/research/`: research (GRB fellowship page, capstone overview and milestone pages). `src/content/capstone-log/`: capstone progress log, one file per entry
 - `src/content/docs/docs/<project>/`: project docs (overview, pages, changelog). New projects also go in `PROJECTS` in `astro.config.mjs`

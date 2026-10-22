@@ -3,6 +3,15 @@
 The version is in `package.json` and shows in the site footer next to the medallion.
 Bump it with every release and add an entry here.
 
+## 0.8.0 (2026-10-22)
+- The homepage can be edited in Lens of Truth, Luca's layout editor: it is rendered from
+  `src/data/layouts/home.layout.json` through `.lens/` (see `.lens/CLAUDE.md` and
+  `docs/lens-of-truth-handoff.md`). It looks as before, and its wording is unchanged.
+  The logo, the Research card's link and the Currently snippet stay dynamic.
+- The homepage's text moved from `copy.yaml` into its layout file; `npm run todos` lists
+  placeholders in layout files too.
+- Fix: the homepage's Currently snippet showed the page's second section instead of its first.
+
 ## 0.7.0 (2026-10-20)
 - Phase 1 structure (see `docs/site-plan.md`): CV and About pages removed; Now page replaced by Currently (media);
   research and capstone moved into the docs layout with LaTeX maths (KaTeX, self-hosted); capstone progress log

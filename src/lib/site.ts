@@ -11,8 +11,12 @@ export function url(path = "/"): string {
   return base + (path.startsWith("/") ? path : `/${path}`);
 }
 
-/** Show drafts while developing, hide them from production builds. */
-export const SHOW_DRAFTS = import.meta.env.DEV;
+/**
+ * Show drafts while developing, hide them from production builds. Lens of Truth
+ * previews the site as published by starting dev with LENS_DRAFTS=0 (its Drafts
+ * switch sets 1).
+ */
+export const SHOW_DRAFTS = import.meta.env.DEV && process.env.LENS_DRAFTS !== "0";
 
 /** A value still waiting for Luca. Such values are never rendered. */
 export function isTodo(value: unknown): boolean {

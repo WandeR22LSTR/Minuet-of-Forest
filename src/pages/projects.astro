@@ -2,13 +2,13 @@
 import { parse } from "yaml";
 import raw from "../data/projects.yaml?raw";
 import Base from "../layouts/Base.astro";
-import { clean, url, copy } from "../lib/site";
+import { clean, url, copy, SHOW_DRAFTS } from "../lib/site";
 import { getCollection } from "astro:content";
 
 type Project = { name: string; status: "live" | "building"; summary?: string; link?: string; link_label?: string };
 const projects = (clean(parse(raw)) ?? []) as Project[];
 // Only link to docs pages that are actually built.
-const docs = new Set((await getCollection("docs", ({ data }) => import.meta.env.DEV || !data.draft)).map((d) => `/${d.id}/`));
+const docs = new Set((await getCollection("docs", ({ data }) => SHOW_DRAFTS || !data.draft)).map((d) => `/${d.id}/`));
 const linkOk = (l?: string) => l && (!l.startsWith("/docs/") || docs.has(l) || l === "/docs/");
 ---
 <Base title="Projects" description={copy.projects.description}>

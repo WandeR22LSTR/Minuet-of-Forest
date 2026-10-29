@@ -8,7 +8,8 @@ import { SITE, BASE } from "./site.config.mjs";
 const asset = (p) => `${BASE.replace(/\/$/, "")}${p}`;
 
 // The capstone log page only exists once there is a published entry (see src/pages/research/capstone/[log].astro).
-const DEV = process.argv.includes("dev");
+// Lens of Truth previews the site as published with LENS_DRAFTS=0 (see SHOW_DRAFTS in src/lib/site.ts).
+const DEV = process.argv.includes("dev") && process.env.LENS_DRAFTS !== "0";
 /** Whether a folder has at least one Markdown file that is published (or we're in dev). */
 const hasPublished = (dir, match = /\.mdx?$/) => {
   try {

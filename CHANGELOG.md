@@ -3,6 +3,9 @@
 The version is in `package.json` and shows in the site footer next to the medallion.
 Bump it with every release and add an entry here.
 
+## 0.8.1 (2026-10-29)
+- Lens of Truth shows the site as published: with `LENS_DRAFTS=0` (which Lens 0.3.0 sets), the dev server hides draft pages from links, navigation and the homepage, as the build does. Lens's Drafts switch shows them again. Plain `npm run dev` is unchanged and still shows drafts.
+
 ## 0.8.0 (2026-10-22)
 - The homepage can be edited in Lens of Truth, Luca's layout editor: it is rendered from
   `src/data/layouts/home.layout.json` through `.lens/` (see `.lens/CLAUDE.md` and

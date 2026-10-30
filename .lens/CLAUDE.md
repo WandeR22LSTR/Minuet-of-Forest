@@ -19,6 +19,7 @@ The full handoff is `docs/lens-of-truth-handoff.md`. Minuet's own `CLAUDE.md` wi
 
 - **Pages:** only the homepage (`src/pages/index.astro`) is a Lens page. Its layout is `src/data/layouts/home.layout.json`. Every other page is hand-built and Lens leaves it alone.
 - **Base path:** `base` in `lens.config.json` is `/minuet-of-forest` and must match `BASE` in `site.config.mjs`. If BASE changes (a custom domain), change it here too. Layouts store site paths without the base; the renderer adds it.
+- **Drafts:** `"drafts": true` in `lens.config.json`. Lens starts the dev server with `LENS_DRAFTS=0`, and Minuet's dev mode then hides draft pages as the build does (`SHOW_DRAFTS` in `src/lib/site.ts`, `DEV` in `astro.config.mjs`), so Lens shows the site as published. Lens's Drafts switch sets `LENS_DRAFTS=1` to show them. Starlight's own draft pages (research, docs) can still be opened by address in dev; only Minuet's links and navigation hide them.
 - **Images** that Luca adds through Lens go to `public/images/` (served at `/images/`). They are the site's content.
 - **Tokens:** surfaces `base`, `sage`, `white` are `--bg`, `--sage`, `--white`. Text uses Minuet's own heading and body styles (`global.css`), and primary buttons are Minuet's `.button`. No new colours.
 - **Spacing:** Minuet has no spacing tokens, and Luca chose not to add any for now. The names `none`, `xs`, `sm`, `md`, `lg`, `xl` are mapped to fixed `rem` sizes in `LensPage.astro` only. Don't add them to `tokens.css` or the design spec without Luca.

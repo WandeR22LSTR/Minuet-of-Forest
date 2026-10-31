@@ -3,6 +3,16 @@
 The version is in `package.json` and shows in the site footer next to the medallion.
 Bump it with every release and add an entry here.
 
+## 0.9.0 (2026-10-31)
+Four sections, one top bar: **Docs · CV · Garden · About** (see `docs/site-plan.md`).
+- **Docs** absorbs Projects: the Docs landing page lists every project and links to research once it's published. The site's top bar now also shows on docs and research pages (in Starlight's menu on phones).
+- **CV** (`/cv/`): a research highlight, selected projects, Resume and PDF buttons, and contact details.
+- **Garden** (`/garden/`): Currently moves in, at `/garden/currently/`.
+- **About** (`/about/`): about the portfolio, the statement of purpose, and contact details.
+- The homepage keeps Luca's intro and gains a Research button (shown once research is published) and a band previewing each section.
+- About, CV and Garden are Lens of Truth pages, editable like the homepage. New Lens blocks: `contacts`; cards gain a `plain` style; buttons gain alignment and wait for draft pages to be published.
+- Old addresses forward: `/projects/` to `/docs/`, `/contact/` to `/about/`, `/currently/` to `/garden/currently/` (to `/garden/` while Currently is a draft).
+
 ## 0.8.1 (2026-10-29)
 - Lens of Truth shows the site as published: with `LENS_DRAFTS=0` (which Lens 0.3.0 sets), the dev server hides draft pages from links, navigation and the homepage, as the build does. Lens's Drafts switch shows them again. Plain `npm run dev` is unchanged and still shows drafts.
 

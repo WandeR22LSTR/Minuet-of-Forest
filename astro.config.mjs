@@ -33,6 +33,14 @@ export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: "always",
+  // Old addresses forward to where their content lives now (docs/site-plan.md).
+  // Astro doesn't add the base to a destination, so it's added here.
+  redirects: {
+    "/projects/": asset("/docs/"),
+    "/contact/": asset("/about/"),
+    // Currently is a draft until Luca publishes it: until then, the Garden page.
+    "/currently/": asset(hasPublished("src/content/pages", /^currently\.md$/) ? "/garden/currently/" : "/garden/"),
+  },
   // LaTeX: $inline$ and $$display$$ maths, rendered to HTML at build time.
   markdown: { remarkPlugins: [remarkMath], rehypePlugins: [rehypeKatex] },
   integrations: [
@@ -51,6 +59,7 @@ export default defineConfig({
         ThemeSelect: "./src/components/starlight/Empty.astro",
         ThemeProvider: "./src/components/starlight/LightOnly.astro",
         SiteTitle: "./src/components/starlight/SiteTitle.astro",
+        SocialIcons: "./src/components/starlight/SiteNav.astro",
         Footer: "./src/components/starlight/Footer.astro",
       },
       sidebar: [

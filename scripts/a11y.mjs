@@ -7,7 +7,7 @@ import { launch } from "./browser.mjs";
 import { NOCTURNE_URL } from "../site.config.mjs";
 
 const axeSource = await readFile(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
-const PAGES = ["/", "/resume/", "/projects/", "/docs/", "/contact/", "/404.html"];
+const PAGES = ["/", "/docs/", "/cv/", "/garden/", "/about/", "/resume/", "/404.html"];
 const srv = await serve();
 const browser = await launch();
 let failed = false;

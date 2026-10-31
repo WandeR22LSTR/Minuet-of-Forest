@@ -11,6 +11,7 @@ Four sections, one top bar: **Docs · CV · Garden · About** (see `docs/site-pl
 - **About** (`/about/`): about the portfolio, the statement of purpose, and contact details.
 - The homepage keeps Luca's intro and gains a Research button (shown once research is published) and a band previewing each section.
 - About, CV and Garden are Lens of Truth pages, editable like the homepage. New Lens blocks: `contacts`; cards gain a `plain` style; buttons gain alignment and wait for draft pages to be published.
+- Docs, research and Garden's Markdown pages are listed for Lens of Truth (`content` in `.lens/lens.config.json`), so Lens 0.4.0 edits them as text beside the live page and creates new ones as drafts.
 - Old addresses forward: `/projects/` to `/docs/`, `/contact/` to `/about/`, `/currently/` to `/garden/currently/` (to `/garden/` while Currently is a draft).
 
 ## 0.8.1 (2026-10-29)

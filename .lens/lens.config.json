@@ -29,6 +29,18 @@
       "route": "/garden/"
     }
   ],
+  "content": [
+    {
+      "name": "Docs and research",
+      "dir": "src/content/docs",
+      "route": "/"
+    },
+    {
+      "name": "Garden",
+      "dir": "src/content/pages",
+      "route": "/garden/"
+    }
+  ],
   "breakpoints": [
     {
       "name": "md",

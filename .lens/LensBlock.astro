@@ -1,12 +1,16 @@
 ---
 // One Lens block. Group blocks render their children on a nested 12-column grid.
-// logo, card and currently are Minuet's own block types: they keep the homepage's
-// dynamic parts working (the logo, cards that link only once their page is
-// published, and the snippet from the Currently page).
+// logo, card, currently and contacts are Minuet's own block types: they keep the
+// site's dynamic parts working (the logo, cards and buttons that link only once
+// their page is published, the snippet from the Currently page, and the contact
+// details from src/data/contact.yaml).
 import { renderMarkdown, withBase } from './markdown';
 import config from './lens.config.json';
 import Logo from '../src/components/Logo.astro';
-import { isPublished, currentlySnippet } from '../src/lib/site';
+import { isPublished, currentlySnippet, clean } from '../src/lib/site';
+import { parse } from 'yaml';
+import contactRaw from '../src/data/contact.yaml?raw';
+import { GITHUB_URL } from '../site.config.mjs';
 
 interface Placement { col?: number; span?: number; order?: number; hidden?: boolean }
 interface Props {
@@ -46,10 +50,14 @@ const ratio = (r?: string) => (r && r !== 'auto' ? r : 'auto');
 
 // A card links only once its page is published; until then it shows its note instead.
 const linked = block.type === 'card' && !!p.href && (await isPublished(p.href));
+// A button to a draft page (Research, say) waits until the page is published:
+// nothing in the build, and a note in dev so Lens can still select it.
+const buttonLive = block.type !== 'button' || !p.href || (await isPublished(p.href));
+const contact = block.type === 'contacts' ? ((clean(parse(contactRaw)) ?? {}) as { email?: string }) : {};
 // The Currently snippet exists only while the Currently page is published. Without it the
 // block renders nothing in the build, and a note in dev so Lens can still select it.
 const now = block.type === 'currently' ? await currentlySnippet() : undefined;
-const empty = block.type === 'currently' && !now && !dev;
+const empty = !dev && ((block.type === 'currently' && !now) || !buttonLive);
 ---
 {!empty && (<div
   class={`lens-block lens-type-${block.type}`}
@@ -71,7 +79,11 @@ const empty = block.type === 'currently' && !now && !dev;
   ) : (
     dev && <div class="lens-empty">No image chosen</div>
   ))}
-  {block.type === 'button' && <a class={`button lens-button-${p.variant ?? 'primary'}`} href={site(p.href) || '#'}>{p.label}</a>}
+  {block.type === 'button' && (buttonLive ? (
+    <p class="lens-button-row" style={`text-align:${p.align ?? 'start'}`}><a class={`button lens-button-${p.variant ?? 'primary'}`} href={site(p.href) || '#'}>{p.label}</a></p>
+  ) : (
+    <div class="lens-empty">Button "{p.label}": shown once {p.href} is published</div>
+  ))}
   {block.type === 'spacer' && <div aria-hidden="true" style={`height:var(--space-${p.size ?? 'lg'})`} />}
   {block.type === 'embed' && (p.src ? (
     <iframe src={site(p.src)} title={p.title} loading="lazy" style={`aspect-ratio:${p.ratio ?? '16/9'}`} />
@@ -89,7 +101,7 @@ const empty = block.type === 'currently' && !now && !dev;
   )}
   {block.type === 'logo' && <Logo variant="bare" size={p.size ?? 96} />}
   {block.type === 'card' && (
-    <div class="card">
+    <div class={p.style === 'plain' ? 'card-plain' : 'card'}>
       <h2>{linked ? <a href={site(p.href)}>{p.title}</a> : p.title}</h2>
       {p.text && <div set:html={renderMarkdown(p.text, base)} />}
       {!linked && p.pending && <p class="muted">{p.pending}</p>}
@@ -99,11 +111,20 @@ const empty = block.type === 'currently' && !now && !dev;
     <section aria-labelledby={`lens-${block.id}`}>
       <h2 id={`lens-${block.id}`}>{p.heading}</h2>
       <p><strong>{now.heading}:</strong> {now.text}</p>
-      <p><a href={site('/currently/')}>{p.more}</a></p>
+      <p><a href={site('/garden/currently/')}>{p.more}</a></p>
     </section>
   ) : (
     <div class="lens-empty">Currently snippet: shown once the Currently page is published</div>
   ))}
+  {block.type === 'contacts' && (
+    <section aria-labelledby={`lens-${block.id}`}>
+      <h2 id={`lens-${block.id}`}>{p.heading}</h2>
+      <ul>
+        {contact.email && <li>Email: <a href={`mailto:${contact.email}`}>{contact.email}</a></li>}
+        <li>GitHub: <a href={GITHUB_URL}>WandeR22LSTR</a></li>
+      </ul>
+    </section>
+  )}
 </div>)}
 
 <style>
@@ -113,12 +134,14 @@ const empty = block.type === 'currently' && !now && !dev;
   /* Spacing between blocks comes from the grid gaps, so the outer margins of block content go. */
   .lens-block > :global(:first-child),
   .lens-prose > :global(:first-child),
-  .lens-type-currently section > :global(:first-child) {
+  .lens-type-currently section > :global(:first-child),
+  .lens-type-contacts section > :global(:first-child) {
     margin-top: 0;
   }
   .lens-block > :global(:last-child),
   .lens-prose > :global(:last-child),
-  .lens-type-currently section > :global(:last-child) {
+  .lens-type-currently section > :global(:last-child),
+  .lens-type-contacts section > :global(:last-child) {
     margin-bottom: 0;
   }
   .lens-type-image img,
@@ -152,6 +175,16 @@ const empty = block.type === 'currently' && !now && !dev;
   .lens-type-logo :global(.logo) {
     display: block;
     width: clamp(40px, 16vw, var(--logo-size));
+  }
+  .lens-type-card .card-plain :global(h2) {
+    margin-top: 0;
+    font-size: 1.35rem;
+  }
+  .lens-button-row {
+    margin: 0;
+  }
+  .lens-type-contacts ul {
+    margin: 0;
   }
   .lens-type-card .card {
     height: 100%;

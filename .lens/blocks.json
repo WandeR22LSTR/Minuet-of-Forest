@@ -173,7 +173,7 @@
           "kind": "url",
           "label": "Link",
           "default": "/",
-          "help": "A site path such as /about/, or a full https:// link."
+          "help": "A site path such as /cv/, or a full https:// link. A button to a draft page (Research) appears once that page is published."
         },
         "variant": {
           "kind": "enum",
@@ -183,6 +183,16 @@
             "secondary"
           ],
           "default": "primary"
+        },
+        "align": {
+          "kind": "enum",
+          "label": "Alignment",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ],
+          "default": "start"
         }
       }
     },
@@ -207,7 +217,8 @@
         "spacer",
         "embed",
         "logo",
-        "card"
+        "card",
+        "contacts"
       ],
       "props": {
         "gap": {
@@ -299,6 +310,16 @@
           "label": "Note while the page isn't published",
           "default": "",
           "help": "Shown under the text when the link's page is still a draft. Leave empty for none."
+        },
+        "style": {
+          "kind": "enum",
+          "label": "Style",
+          "options": [
+            "card",
+            "plain"
+          ],
+          "default": "card",
+          "help": "Card: a white box. Plain: no box, for a row of short previews."
         }
       }
     },
@@ -322,6 +343,23 @@
           "default": "[link to the Currently page]",
           "required": true,
           "maxLength": 80
+        }
+      }
+    },
+    "contacts": {
+      "label": "Contacts",
+      "layout": {
+        "col": 1,
+        "span": 12
+      },
+      "props": {
+        "heading": {
+          "kind": "text",
+          "label": "Heading",
+          "default": "Contact",
+          "required": true,
+          "maxLength": 80,
+          "help": "The details themselves come from src/data/contact.yaml, so About and CV always match."
         }
       }
     }

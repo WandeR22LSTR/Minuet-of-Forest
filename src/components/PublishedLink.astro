@@ -1,0 +1,9 @@
+---
+// A link to a page that may still be a draft (Research, Currently): shown only once
+// that page is published, so the built site never links to a missing page.
+import { isPublished, url } from "../lib/site";
+interface Props { href: string }
+const { href } = Astro.props;
+const live = await isPublished(href);
+---
+{live && <a href={url(href)}><slot /></a>}

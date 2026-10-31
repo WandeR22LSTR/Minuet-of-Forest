@@ -1,0 +1,30 @@
+---
+// Every personal project (src/data/projects.yaml), shown on the Docs landing page.
+// Links go only to docs pages that are built; others fall back to /docs/.
+import { parse } from "yaml";
+import { getCollection } from "astro:content";
+import raw from "../data/projects.yaml?raw";
+import { clean, url, SHOW_DRAFTS } from "../lib/site";
+
+type Project = { name: string; status: "live" | "building"; summary?: string; link?: string; link_label?: string };
+const projects = (clean(parse(raw)) ?? []) as Project[];
+const docs = new Set((await getCollection("docs", ({ data }) => SHOW_DRAFTS || !data.draft)).map((d) => `/${d.id}/`));
+const linkOk = (l?: string) => l && (!l.startsWith("/docs/") || docs.has(l) || l === "/docs/");
+---
+<ul class="project-list">
+  {projects.map((p) => (
+    <li>
+      <p class="project-name"><strong>{p.name}</strong> <span class="tag">{p.status}</span></p>
+      {p.summary && <p>{p.summary}</p>}
+      {linkOk(p.link) && <p><a href={url(p.link!)}>{p.link_label ?? "[link label]"}</a></p>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .project-list { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); padding: 0; list-style: none; }
+  .project-list li { margin: 0; padding: 1rem; border: 1px solid var(--sage); border-radius: 8px; background: var(--white); }
+  .project-list p { margin: 0 0 0.5rem; }
+  .project-list p:last-child { margin-bottom: 0; }
+  .tag { display: inline-block; background: var(--sage); color: var(--forest); font-size: 0.8rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 999px; }
+</style>

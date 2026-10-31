@@ -1,0 +1,182 @@
+{
+  "lens": 1,
+  "page": "cv",
+  "sections": [
+    {
+      "id": "cv-intro",
+      "props": {
+        "label": "CV",
+        "surface": "base",
+        "padding": "none",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "cv-title",
+          "type": "heading",
+          "props": {
+            "text": "CV",
+            "level": 1,
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": "cv-research",
+      "props": {
+        "label": "Research",
+        "surface": "base",
+        "padding": "md",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "cv-research-card",
+          "type": "card",
+          "props": {
+            "title": "Research",
+            "text": "[research highlight]",
+            "href": "/research/",
+            "pending": "[note shown until the research page is published]",
+            "style": "card"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": "cv-projects",
+      "props": {
+        "label": "Selected projects",
+        "surface": "base",
+        "padding": "md",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "cv-projects-heading",
+          "type": "heading",
+          "props": {
+            "text": "Projects",
+            "level": 2,
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        },
+        {
+          "id": "cv-project-1",
+          "type": "card",
+          "props": {
+            "title": "[project]",
+            "text": "[one line about the project]",
+            "href": "",
+            "pending": "",
+            "style": "card"
+          },
+          "layout": {
+            "col": 1,
+            "span": 6,
+            "at": {
+              "sm": {
+                "span": 12
+              }
+            }
+          }
+        },
+        {
+          "id": "cv-project-2",
+          "type": "card",
+          "props": {
+            "title": "[project]",
+            "text": "[one line about the project]",
+            "href": "",
+            "pending": "",
+            "style": "card"
+          },
+          "layout": {
+            "col": 7,
+            "span": 6,
+            "at": {
+              "sm": {
+                "col": 1,
+                "span": 12
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cv-resume",
+      "props": {
+        "label": "Resume",
+        "surface": "base",
+        "padding": "md",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "cv-resume-button",
+          "type": "button",
+          "props": {
+            "label": "Resume",
+            "href": "/resume/",
+            "variant": "primary",
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 6,
+            "at": {
+              "sm": {
+                "span": 12
+              }
+            }
+          }
+        },
+        {
+          "id": "cv-pdf-button",
+          "type": "button",
+          "props": {
+            "label": "[PDF button label]",
+            "href": "/resume.pdf",
+            "variant": "secondary",
+            "align": "start"
+          },
+          "layout": {
+            "col": 7,
+            "span": 6,
+            "at": {
+              "sm": {
+                "col": 1,
+                "span": 12
+              }
+            }
+          }
+        },
+        {
+          "id": "cv-contacts",
+          "type": "contacts",
+          "props": {
+            "heading": "Contact"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    }
+  ]
+}

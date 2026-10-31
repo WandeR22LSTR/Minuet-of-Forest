@@ -1,0 +1,78 @@
+{
+  "lens": 1,
+  "page": "about",
+  "sections": [
+    {
+      "id": "about-intro",
+      "props": {
+        "label": "About",
+        "surface": "base",
+        "padding": "none",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "about-title",
+          "type": "heading",
+          "props": {
+            "text": "About",
+            "level": 1,
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        },
+        {
+          "id": "about-blurb",
+          "type": "text",
+          "props": {
+            "markdown": "[about this portfolio]",
+            "maxWidth": "prose",
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        },
+        {
+          "id": "about-purpose",
+          "type": "text",
+          "props": {
+            "markdown": "[statement of purpose of the site]",
+            "maxWidth": "prose",
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": "about-contact",
+      "props": {
+        "label": "Contact",
+        "surface": "base",
+        "padding": "md",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "contacts",
+          "type": "contacts",
+          "props": {
+            "heading": "Contact"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,33 @@
       "name": "home",
       "layout": "src/data/layouts/home.layout.json",
       "route": "/"
+    },
+    {
+      "name": "about",
+      "layout": "src/data/layouts/about.layout.json",
+      "route": "/about/"
+    },
+    {
+      "name": "cv",
+      "layout": "src/data/layouts/cv.layout.json",
+      "route": "/cv/"
+    },
+    {
+      "name": "garden",
+      "layout": "src/data/layouts/garden.layout.json",
+      "route": "/garden/"
+    }
+  ],
+  "content": [
+    {
+      "name": "Docs and research",
+      "dir": "src/content/docs",
+      "route": "/"
+    },
+    {
+      "name": "Garden",
+      "dir": "src/content/pages",
+      "route": "/garden/"
     }
   ],
   "breakpoints": [

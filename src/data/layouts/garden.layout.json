@@ -1,0 +1,66 @@
+{
+  "lens": 1,
+  "page": "garden",
+  "sections": [
+    {
+      "id": "garden-intro",
+      "props": {
+        "label": "Garden",
+        "surface": "base",
+        "padding": "none",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "garden-title",
+          "type": "heading",
+          "props": {
+            "text": "Garden",
+            "level": 1,
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        },
+        {
+          "id": "garden-text",
+          "type": "text",
+          "props": {
+            "markdown": "[introduction to the garden]",
+            "maxWidth": "prose",
+            "align": "start"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    },
+    {
+      "id": "garden-now",
+      "props": {
+        "label": "Currently",
+        "surface": "base",
+        "padding": "md",
+        "gap": "md"
+      },
+      "blocks": [
+        {
+          "id": "currently",
+          "type": "currently",
+          "props": {
+            "heading": "Currently",
+            "more": "[link to the Currently page]"
+          },
+          "layout": {
+            "col": 1,
+            "span": 12
+          }
+        }
+      ]
+    }
+  ]
+}

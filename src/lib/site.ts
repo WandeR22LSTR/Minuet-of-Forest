@@ -48,14 +48,18 @@ export async function researchPublished() {
   return (await getCollection("docs", ({ id, data }) => id === "research" && (SHOW_DRAFTS || !data.draft))).length > 0;
 }
 
-/** Main navigation. Entries marked `entry` exist only once that page is published. */
+/** Main navigation: the site's four sections. */
 const NAV = [
-  { href: "/research/", label: "Research", entry: "research" },
-  { href: "/projects/", label: "Projects" },
   { href: "/docs/", label: "Docs" },
-  { href: "/resume/", label: "Resume" },
-  { href: "/currently/", label: "Currently", entry: "currently" },
-  { href: "/contact/", label: "Contact" },
+  { href: "/cv/", label: "CV" },
+  { href: "/garden/", label: "Garden" },
+  { href: "/about/", label: "About" },
+];
+
+/** Pages that exist only once their entry is published (drafts are hidden in production). */
+const GATED = [
+  { href: "/research/", entry: "research" },
+  { href: "/garden/currently/", entry: "currently" },
 ];
 
 /** IDs of published entries: the pages collection, plus "research" once it is published. */
@@ -65,15 +69,14 @@ async function liveEntries() {
   return live;
 }
 
-/** Main navigation. Pages backed by a draft entry disappear in production. */
+/** Main navigation. */
 export async function navItems() {
-  const live = await liveEntries();
-  return NAV.filter((i) => !i.entry || live.has(i.entry));
+  return NAV;
 }
 
 /** Whether a site path can be linked: false for a page whose entry is still a draft in production. */
 export async function isPublished(href: string) {
-  const entry = NAV.find((i) => i.href === href)?.entry;
+  const entry = GATED.find((i) => i.href === href)?.entry;
   return !entry || (await liveEntries()).has(entry);
 }
 

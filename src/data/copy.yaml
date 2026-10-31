@@ -1,12 +1,14 @@
 # All site copy in one place. Every value in square brackets is a placeholder that is
 # shown on the live site as-is until Luca writes the real text. `npm run todos` lists them.
-# The homepage's text is in src/data/layouts/home.layout.json, edited in Lens of Truth.
+# The text of the Lens pages (home, About, CV, Garden) is in src/data/layouts/, edited in Lens of Truth.
 site:
   description: "[site description]"
-projects:
-  description: "[description of the projects page]"
-contact:
-  description: "[description of the contact page]"
+about:
+  description: "[description of the About page]"
+cv:
+  description: "[description of the CV page]"
+garden:
+  description: "[description of the garden]"
 resume:
   description: "[description of the resume page]"
   empty: "[note shown while the resume is being written]"

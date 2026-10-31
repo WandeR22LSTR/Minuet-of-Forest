@@ -1,8 +1,8 @@
 ---
-// Markdown pages (currently). Drafts are only built in development.
+// Garden pages written in Markdown (src/content/pages/: currently). Drafts are only built in development.
 import { render } from "astro:content";
-import Base from "../layouts/Base.astro";
-import { publishedPages } from "../lib/site";
+import Base from "../../layouts/Base.astro";
+import { publishedPages } from "../../lib/site";
 
 export async function getStaticPaths() {
   return (await publishedPages()).map((entry) => ({ params: { page: entry.id }, props: { entry } }));

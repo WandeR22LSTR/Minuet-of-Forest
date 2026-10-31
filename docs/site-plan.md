@@ -1,33 +1,32 @@
-# Site plan (Phase 1 proposal)
+# Site plan
 
-Status: **site map approved 2026-10-20.**
-- **Built:** CV and About removed; Currently page; research and capstone in the docs layout with LaTeX; capstone progress log; a docs section per project with overview and changelog stubs.
-- **Waiting:** the project registry, until the Ice Cavern session's format arrives. Diagrams and notebooks will be set up when the first ones arrive.
+Status: **site map revised 2026-10-31** (four sections, every page reachable from one top bar).
+- **Built:** the four sections below; research and capstone in the docs layout with LaTeX; capstone progress log; a docs section per project with overview and changelog stubs. Home, About, CV and Garden are Lens of Truth pages (see `.lens/CLAUDE.md`).
+- **Waiting:** the project registry, until the Ice Cavern session's format arrives. Diagrams and notebooks will be set up when the first ones arrive. Garden's Obsidian notes, screenshots and demos come later.
 
 ## Readers
-1. Research advisor; graduate school and internship reviewers, reached through the link on the resume. The home page and resume serve them first.
-2. Friends: welcome, but not a priority.
+1. Research advisor; graduate school and internship reviewers, reached through the link on the resume. The CV page, the home page's Research button and the resume serve them first.
+2. Friends: welcome, but not a priority. The Garden is theirs.
 
-Ocarina of Time names appear in the project sections. The professional pages (home, research, resume) use plain names.
+Ocarina of Time names appear in the project sections. The professional pages (home, CV, research, resume) use plain names.
 
-## Site map
-| Route | What | Notes |
+## Sections
+The top bar is the main way around the site: **Docs · CV · Garden · About**, on every page, docs and research included. The home page introduces each section in a band of short previews.
+
+| Section | Route | What |
 |---|---|---|
-| `/` | Home | Short intro, entry points to Research, Projects and Resume |
-| `/research/` | GRB summer fellowship | One long page: the whole fellowship. LaTeX maths, figures, data, notebooks, code |
-| `/research/capstone/` | Capstone | Continues the GRB work. An overview, a **dated progress log** (short entries, newest first) and **milestone pages** for its layers (code automation, agent-based repository work, physical relations) as each reaches a milestone |
-| `/projects/` | Project index | Every personal project: name, one line, status, current version, timeline. Each links to its docs |
-| `/docs/<project>/` | Project documentation | The main content of each project. One section per project (below) |
-| `/docs/<project>/changelog/` | Changelog | Per project, from its changelog file |
-| `/resume/` + `/resume.pdf` | Resume | Unchanged |
-| `/contact/` | Contact | Stays |
-| `/currently/` | Currently | A media-flavoured "now" page: what Luca is reading, watching, playing and listening to, with a "last updated" date. Name of the route open |
-| `/garden/` | Digital garden | Published slice of the Obsidian vault. **Stretch goal for 1.0**, scoped separately |
+| Home | `/` | Short intro, a Research button (shown once research is published), and a preview of each section |
+| **Docs** | `/docs/` | Research, every project's docs, and dev docs. The landing page lists the projects (from `src/data/projects.yaml`) |
+| | `/research/` | GRB summer fellowship: one long page. LaTeX maths, figures, data, notebooks, code. Grouped in the Docs sidebar; the address stays because the resume links to it |
+| | `/research/capstone/` | Capstone: overview, **dated progress log** (newest first) and **milestone pages** for its layers |
+| | `/docs/<project>/` | Each project's documentation; `/docs/<project>/changelog/` its changelog |
+| **CV** | `/cv/` | The professional page, for sterile contexts: a research highlight, selected projects, the resume and PDF, contact details. It overlaps the other sections on purpose |
+| | `/resume/` + `/resume.pdf` | Resume, unchanged, linked from CV |
+| **Garden** | `/garden/` | Digital garden: Currently now; a published slice of the Obsidian vault, project screenshots and demos later |
+| | `/garden/currently/` | Currently: what Luca is reading, watching, playing and listening to, with a "last updated" date |
+| **About** | `/about/` | About this portfolio, the site's statement of purpose, and contact details |
 
-Removed:
-- `/cv/` and `cv.pdf`: CVs are tailored per application.
-- `/about/`: the Minuet of Forest docs section covers it.
-
+Old addresses forward: `/projects/` to `/docs/`, `/contact/` to `/about/`, `/currently/` to `/garden/currently/` (to `/garden/` while Currently is a draft).
 
 ## Projects documented here
 Every personal project except Nocturne of Shadow, whose docs stay on Nocturne itself: they would include sensitive material, and this repo is public.

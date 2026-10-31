@@ -1,0 +1,20 @@
+---
+// The site's main navigation (Docs, CV, Garden, About) in Starlight's header, in place
+// of its social icons, so docs and research pages share the top bar with the rest of
+// the site. On narrow screens Starlight shows it in its menu.
+import { url, navItems } from "../../lib/site";
+const nav = await navItems();
+const here = Astro.url.pathname;
+---
+<nav class="site-nav" aria-label="Site">
+  <ul>
+    {nav.map((i) => (
+      <li><a href={url(i.href)} aria-current={here.startsWith(url(i.href)) ? "page" : undefined}>{i.label}</a></li>
+    ))}
+  </ul>
+</nav>
+<style>
+  .site-nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; }
+  .site-nav a { color: var(--forest); text-decoration: none; padding: 0.25rem 0; font-size: 1rem; }
+  .site-nav a:hover, .site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; }
+</style>

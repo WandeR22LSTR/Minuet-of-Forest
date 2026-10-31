@@ -73,8 +73,26 @@
                   "md": {
                     "col": 4,
                     "span": 6
+                  },
+                  "sm": {
+                    "col": 1,
+                    "span": 12
                   }
                 }
+              }
+            },
+            {
+              "id": "research-button",
+              "type": "button",
+              "props": {
+                "label": "Research",
+                "href": "/research/",
+                "variant": "secondary",
+                "align": "center"
+              },
+              "layout": {
+                "col": 1,
+                "span": 12
               }
             }
           ]
@@ -82,46 +100,32 @@
       ]
     },
     {
-      "id": "cards",
+      "id": "sections",
       "props": {
-        "label": "Cards",
-        "surface": "base",
-        "padding": "md",
+        "label": "Sections",
+        "surface": "sage",
+        "padding": "lg",
         "gap": "md"
       },
       "blocks": [
         {
-          "id": "card-research",
+          "id": "preview-docs",
           "type": "card",
           "props": {
-            "title": "Research",
-            "text": "[one line about research]",
-            "href": "/research/",
-            "pending": "[note shown until the research page is published]"
+            "title": "Docs",
+            "text": "[one line about the docs]",
+            "href": "/docs/",
+            "pending": "",
+            "style": "plain"
           },
           "layout": {
             "col": 1,
-            "span": 4,
+            "span": 3,
             "at": {
-              "sm": {
-                "span": 12
-              }
-            }
-          }
-        },
-        {
-          "id": "card-projects",
-          "type": "card",
-          "props": {
-            "title": "Projects",
-            "text": "[one line about projects]",
-            "href": "/projects/",
-            "pending": ""
-          },
-          "layout": {
-            "col": 5,
-            "span": 4,
-            "at": {
+              "md": {
+                "col": 1,
+                "span": 6
+              },
               "sm": {
                 "col": 1,
                 "span": 12
@@ -130,18 +134,23 @@
           }
         },
         {
-          "id": "card-resume",
+          "id": "preview-cv",
           "type": "card",
           "props": {
-            "title": "Resume",
-            "text": "...",
-            "href": "/resume/",
-            "pending": ""
+            "title": "CV",
+            "text": "[one line about the CV]",
+            "href": "/cv/",
+            "pending": "",
+            "style": "plain"
           },
           "layout": {
-            "col": 9,
-            "span": 4,
+            "col": 4,
+            "span": 3,
             "at": {
+              "md": {
+                "col": 7,
+                "span": 6
+              },
               "sm": {
                 "col": 1,
                 "span": 12
@@ -150,15 +159,53 @@
           }
         },
         {
-          "id": "currently",
-          "type": "currently",
+          "id": "preview-garden",
+          "type": "card",
           "props": {
-            "heading": "Currently",
-            "more": "[link to the Currently page]"
+            "title": "Garden",
+            "text": "[one line about the garden]",
+            "href": "/garden/",
+            "pending": "",
+            "style": "plain"
           },
           "layout": {
-            "col": 1,
-            "span": 12
+            "col": 7,
+            "span": 3,
+            "at": {
+              "md": {
+                "col": 1,
+                "span": 6
+              },
+              "sm": {
+                "col": 1,
+                "span": 12
+              }
+            }
+          }
+        },
+        {
+          "id": "preview-about",
+          "type": "card",
+          "props": {
+            "title": "About",
+            "text": "[one line about the About page]",
+            "href": "/about/",
+            "pending": "",
+            "style": "plain"
+          },
+          "layout": {
+            "col": 10,
+            "span": 3,
+            "at": {
+              "md": {
+                "col": 7,
+                "span": 6
+              },
+              "sm": {
+                "col": 1,
+                "span": 12
+              }
+            }
           }
         }
       ]

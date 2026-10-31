@@ -1,0 +1,11 @@
+---
+// A Lens of Truth page: its content and arrangement live in
+// src/data/layouts/garden.layout.json (see .lens/CLAUDE.md).
+import Base from "../../layouts/Base.astro";
+import LensPage from "../../../.lens/LensPage.astro";
+import layout from "../../data/layouts/garden.layout.json";
+import { copy } from "../../lib/site";
+---
+<Base title="Garden" description={copy.garden.description}>
+  <LensPage layout={layout} />
+</Base>
